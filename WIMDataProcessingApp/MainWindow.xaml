@@ -15,7 +15,23 @@
         </StackPanel.Resources>
 
         <StackPanel Orientation="Horizontal" Margin="{StaticResource defaultMargin}">
-            <Button Click="AutoReport_Click" Margin="{StaticResource buttonMargin}">测试1</Button>
+            <Label >开始时间（默认为昨天）</Label>
+            <DatePicker Width="100" Name="StartDataTime" SelectedDate="10/1/2020"></DatePicker>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Margin="{StaticResource defaultMargin}">
+            <Label>结束时间（默认为今天）</Label>
+            <DatePicker Width="100" Name="FinishDataTime" SelectedDate="11/1/2020"></DatePicker>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Margin="{StaticResource defaultMargin}">
+            <Label >车道（用半角逗号分隔）</Label>
+            <TextBox Width="150" Name="Lane" Text="1,2,3,4"></TextBox>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Margin="{StaticResource defaultMargin}">
+            <Label >车速（用半角逗号分隔，仅支持整数）</Label>
+            <TextBox Width="150" Name="Speed" Text="0,30,50,70"></TextBox>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Margin="{StaticResource defaultMargin}">
+            <Button Click="AutoReport_Click" Margin="{StaticResource buttonMargin}">计算</Button>
             <Button  Click="OpenReport_Click" Margin="{StaticResource buttonMargin}">测试2</Button>
         </StackPanel>
    
