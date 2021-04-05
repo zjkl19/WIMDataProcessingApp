@@ -395,7 +395,6 @@ namespace WIMDataProcessingApp
                 List<HighSpeedData> data = highSpeedData.Where(dataPredicate).OrderByDescending(x => x.Gross_Load).Take(Convert.ToInt32(CriticalCount.Text)).ToList();
                 var temp = ExcelHelper.ExportTopGrossLoad(data);
             }
-
             
             MessageBox.Show("运行完成！");
 

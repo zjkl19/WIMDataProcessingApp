@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:WIMDataProcessingApp"
         xmlns:sys1="http://schemas.microsoft.com/netfx/2009/xaml/presentation"
         mc:Ignorable="d"
-        Title="动态称重数据处理程序 v0.1" Height="360" Width="540">
+        Title="动态称重数据处理程序 v0.1" Height="390" Width="540">
     <StackPanel >
 
         <StackPanel.Resources>
@@ -51,6 +51,9 @@
             <Button  Click="ExportDailyTrafficVolume_Click" Margin="{StaticResource buttonMargin}">导出每日交通流量</Button>
             <Button  Click="ExportTopGrossLoad_Click" Margin="{StaticResource buttonMargin}">导出重量前n的车重数据</Button>
         </StackPanel>
-   
+        <StackPanel Orientation="Horizontal" Margin="{StaticResource defaultMargin}">
+            <Label Content="Copyright © 福建省建筑科学研究院 福建省建筑工程质量检测中心有限公司 2021" VerticalAlignment="Center"/>
+        </StackPanel>
+
     </StackPanel>
 </Window>
