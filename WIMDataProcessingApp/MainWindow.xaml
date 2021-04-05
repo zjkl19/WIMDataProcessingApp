@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:WIMDataProcessingApp"
         xmlns:sys1="http://schemas.microsoft.com/netfx/2009/xaml/presentation"
         mc:Ignorable="d"
-        Title="动态称重数据处理程序" Height="330" Width="540">
+        Title="动态称重数据处理程序 v0.1" Height="360" Width="540">
     <StackPanel >
 
         <StackPanel.Resources>
@@ -43,9 +43,13 @@
             <TextBox Width="100" Name="CriticalWeight" Text="50000"></TextBox>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Margin="{StaticResource defaultMargin}">
-            <Button Click="AutoReport_Click" Margin="{StaticResource buttonMargin}" Width="50">计算</Button>
+            <Label >临界数量n（仅支持整数）</Label>
+            <TextBox Width="100" Name="CriticalCount" Text="10"></TextBox>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Margin="{StaticResource defaultMargin}">
+            <Button Click="Calc_Click" Margin="{StaticResource buttonMargin}" Width="50">计算</Button>
             <Button  Click="ExportDailyTrafficVolume_Click" Margin="{StaticResource buttonMargin}">导出每日交通流量</Button>
-            <Button  Click="ExportTopGrossLoad_Click" Margin="{StaticResource buttonMargin}">导出重量前10的车重数据</Button>
+            <Button  Click="ExportTopGrossLoad_Click" Margin="{StaticResource buttonMargin}">导出重量前n的车重数据</Button>
         </StackPanel>
    
     </StackPanel>

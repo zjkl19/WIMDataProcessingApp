@@ -18,14 +18,26 @@ namespace WIMDataProcessingApp
         /// <returns></returns>
         public static int ExportDailyTrafficVolume(List<DailyTraffic> data)
         {
-            var file = new FileInfo("导出的交通流量数据.xlsx");    //文件要提前建立
+            FileInfo file = new FileInfo("导出的交通流量数据.xlsx");
+
+            if (file.Exists)
+
+            {
+                file.Delete();
+
+                file = new FileInfo("导出的交通流量数据.xlsx");
+
+            }
+
             var sheetName = "sheet1";
             try
             {
                 using (var package = new ExcelPackage(file))
                 {
                     //var worksheet = package.Workbook.Worksheets.Add(sheetName);    //新建
-                    var worksheet = package.Workbook.Worksheets[sheetName];    //已有
+                    //var worksheet = package.Workbook.Worksheets[sheetName];    //已有
+                    var worksheet = package.Workbook.Worksheets.Add(sheetName);
+
                     worksheet.Cells[2, 1].Value = "上行车数";
                     worksheet.Cells[3, 1].Value = "下行车数";
                     worksheet.Cells[4, 1].Value = "车辆总数";
@@ -56,14 +68,24 @@ namespace WIMDataProcessingApp
         /// <returns></returns>
         public static int ExportTopGrossLoad(List<HighSpeedData> data)
         {
-            var file = new FileInfo("导出的重量前n车辆数据.xlsx");    //文件要提前建立
+            var file = new FileInfo("导出的重量前n车辆数据.xlsx");
+
+            if (file.Exists)
+
+            {
+                file.Delete();
+
+                file = new FileInfo("导出的重量前n车辆数据.xlsx");
+
+            }
             var sheetName = "sheet1";
             try
             {
                 using (var package = new ExcelPackage(file))
                 {
                     //var worksheet = package.Workbook.Worksheets.Add(sheetName);    //新建
-                    var worksheet = package.Workbook.Worksheets[sheetName];    //已有
+                    //var worksheet = package.Workbook.Worksheets[sheetName];    //已有
+                    var worksheet = package.Workbook.Worksheets.Add(sheetName);
                     worksheet.Cells[1, 1].Value = "序号"; worksheet.Cells[1, 2].Value = "时间";
                     worksheet.Cells[1, 3].Value = "车道"; worksheet.Cells[1, 4].Value = "方向";
                     worksheet.Cells[1, 5].Value = "轴数"; worksheet.Cells[1, 6].Value = "总重（kg）";

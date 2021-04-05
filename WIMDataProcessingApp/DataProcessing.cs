@@ -9,24 +9,31 @@ namespace WIMDataProcessingApp
 {
     public class DataProcessing
     {
-        public static IEnumerable<DailyTraffic> GetDailyTraffic(IQueryable<HighSpeedData> table, DateTime StartDataTime, DateTime FinishDataTime)
+        //计算每日交通流量，注意，程序规定前50%的车道为上行数据
+        public static IEnumerable<DailyTraffic> GetDailyTraffic(string laneText, IQueryable<HighSpeedData> table, DateTime StartDataTime, DateTime FinishDataTime)
         {
+            int t;
             DailyTraffic dailyTraffic;
             var currTime = StartDataTime;
+
+            int[] Lane_Div = Array.ConvertAll(laneText.Split(','), s => int.Parse(s));
+
             //var cc = table.Where(x => EntityFunctions.TruncateTime(x.HSData_DT)>= EntityFunctions.TruncateTime(StartDataTime)).Count();
             while (currTime.AddDays(1) <= FinishDataTime)
             {
                 var k1 = currTime;
                 var k2 = currTime.AddDays(1);
 
+                t= Lane_Div[Lane_Div.Count() / 2];
+
                 var cc = table.Where(x => x.HSData_DT >= k1 && x.HSData_DT < k2).Count();
                 dailyTraffic = new DailyTraffic
                 {
                     Date = currTime.ToString("m")
                     ,
-                    UpStreamCount = table.Where(x => x.HSData_DT >= k1 && x.HSData_DT < k2 && (x.Lane_Id == 1 || x.Lane_Id == 2)).Count()
+                    UpStreamCount = table.Where(x => x.HSData_DT >= k1 && x.HSData_DT < k2 && (x.Lane_Id < t)).Count()
                     ,
-                    DownStreamCount = table.Where(x => x.HSData_DT >= k1 && x.HSData_DT < k2 && (x.Lane_Id == 3 || x.Lane_Id == 4)).Count()
+                    DownStreamCount = table.Where(x => x.HSData_DT >= k1 && x.HSData_DT < k2 && (x.Lane_Id >= t)).Count()
                     ,
                     TotalStreamCount = table.Where(x => x.HSData_DT >= k1 && x.HSData_DT < k2).Count()
 
@@ -39,7 +46,7 @@ namespace WIMDataProcessingApp
         }
 
         //不同车道车数量分布
-        public static IEnumerable<int> GetLaneDist(string laneText,Expression<Func<HighSpeedData, bool>> dataPredicate, IQueryable<HighSpeedData> highSpeedData)
+        public static IEnumerable<int> GetLaneDist(string laneText, Expression<Func<HighSpeedData, bool>> dataPredicate, IQueryable<HighSpeedData> highSpeedData)
         {
             int temp;
             int[] Lane_Div = Array.ConvertAll(laneText.Split(','), s => int.Parse(s));
@@ -52,10 +59,10 @@ namespace WIMDataProcessingApp
         //不同区间车速车数量分布
         public static IEnumerable<int> GetSpeedDist(string speedText, Expression<Func<HighSpeedData, bool>> dataPredicate, IQueryable<HighSpeedData> highSpeedData)
         {
-            int t1,t2;    //临时变量
+            int t1, t2;    //临时变量
             int[] Speed_Div = Array.ConvertAll(speedText.Split(','), s => int.Parse(s));
             //var Speed_Dist = new List<int>();
-            
+
             for (int i = 0; i < Speed_Div.Length; i++)
             {
                 t1 = Speed_Div[i];

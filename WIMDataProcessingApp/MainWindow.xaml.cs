@@ -86,9 +86,8 @@ namespace WIMDataProcessingApp
             InitializeComponent();
         }
 
-        private void AutoReport_Click(object sender, RoutedEventArgs e)
+        private void Calc_Click(object sender, RoutedEventArgs e)
         {
-            int t1,t2;
 
             var startDataTime = StartDataTime.SelectedDate ?? DateTime.Now.AddDays(-1);
             var finishDataTime = FinishDataTime.SelectedDate ?? DateTime.Now;
@@ -185,7 +184,6 @@ namespace WIMDataProcessingApp
                 {
                     Console.WriteLine(ex.Message);
                 }
-
 
                 //var Gross_Load_Div = new int[] { 0, 10_000, 20_000, 30_000 };
                 //不同区间车重车数量分布
@@ -330,16 +328,16 @@ namespace WIMDataProcessingApp
                         Gross_Load = e1.Gross_Load
                     }
                     );
-                IEnumerable<DailyTraffic> dailyTrafficData = DataProcessing.GetDailyTraffic(highSpeedData, startDataTime, finishDataTime);
+                IEnumerable<DailyTraffic> dailyTrafficData = DataProcessing.GetDailyTraffic(Lane.Text,highSpeedData, startDataTime, finishDataTime);
 
                 //每日交通流量信息数据导入excel
                 var temp = ExcelHelper.ExportDailyTrafficVolume(dailyTrafficData.ToList());
             }
 
- 
+            MessageBox.Show("运行完成！");
 
         }
-
+        //重量前10的车辆数据导入excel
         private void ExportTopGrossLoad_Click(object sender, RoutedEventArgs e)
         {
             var startDataTime = StartDataTime.SelectedDate ?? DateTime.Now.AddDays(-1);
@@ -394,12 +392,12 @@ namespace WIMDataProcessingApp
                     }
                     );
 
-                List<HighSpeedData> data = highSpeedData.Where(dataPredicate).OrderByDescending(x => x.Gross_Load).Take(10).ToList();
+                List<HighSpeedData> data = highSpeedData.Where(dataPredicate).OrderByDescending(x => x.Gross_Load).Take(Convert.ToInt32(CriticalCount.Text)).ToList();
                 var temp = ExcelHelper.ExportTopGrossLoad(data);
             }
 
-            //重量前10的车辆数据导入excel
-
+            
+            MessageBox.Show("运行完成！");
 
         }
     }
