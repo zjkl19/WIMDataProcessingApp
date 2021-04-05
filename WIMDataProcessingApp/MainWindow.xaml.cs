@@ -145,10 +145,9 @@ namespace WIMDataProcessingApp
                     );
                 #endregion;
 
-                //不同车道分布
+                //不同车道车数量分布
                 //var Lane_Div = new int[] { 1, 2, 3, 4 };
                 List<int> Lane_Dist = DataProcessing.GetLaneDist(Lane.Text,dataPredicate, highSpeedData).ToList();
-
                 try
                 {
                     var fs = new FileStream("不同车道车辆数.txt", FileMode.Create);
@@ -167,29 +166,14 @@ namespace WIMDataProcessingApp
                     Console.WriteLine(ex.Message);
                 }
 
-                int[] Speed_Div = Array.ConvertAll(Speed.Text.Split(','), s => int.Parse(s));
-                var Speed_Dist = new List<int>();
-                //不同区间车速分布
-                for (int i = 0; i < Speed_Div.Length; i++)
-                {
-                    t1 = Speed_Div[i];
-                    if (i != Speed_Div.Length - 1)
-                    {
-                        t2 = Speed_Div[i + 1];
-                        Speed_Dist.Add(highSpeedData.Where(x => x.Speed >= t1 && x.Speed < t2).Where(dataPredicate).Count());
-                    }
-                    else
-                    {
-                        Speed_Dist.Add(highSpeedData.Where(x => x.Speed >= t1).Where(dataPredicate).Count());
-                    }
-                    Console.WriteLine(Speed_Dist[i]);
-                }
+                //不同区间车速车数量分布
+                List<int> Speed_Dist = DataProcessing.GetSpeedDist(Speed.Text, dataPredicate, highSpeedData).ToList();
                 try
                 {
                     var fs = new FileStream("不同车速区间车辆数.txt", FileMode.Create);
                     var sw = new StreamWriter(fs, Encoding.Default);
                     var writeString = $"{Speed_Dist[0]}";
-                    for (int i = 1; i < Speed_Div.Length; i++)
+                    for (int i = 1; i < Speed_Dist.Count; i++)
                     {
                         writeString = $"{writeString},{Speed_Dist[i]}";
                     }
@@ -204,31 +188,16 @@ namespace WIMDataProcessingApp
 
 
                 //var Gross_Load_Div = new int[] { 0, 10_000, 20_000, 30_000 };
-                int[] Gross_Load_Div = Array.ConvertAll(GrossLoad.Text.Split(','), s => int.Parse(s));
-                var Gross_Load_Dist = new List<int>();
-                //不同区间车重分布
-                for (int i = 0; i < Gross_Load_Div.Length; i++)
-                {
-                    t1 = Gross_Load_Div[i];
-                    if (i != Gross_Load_Div.Length - 1)
-                    {
-                        t2 = Gross_Load_Div[i + 1];
-                        Gross_Load_Dist.Add(highSpeedData.Where(x => x.Gross_Load >= t1 && x.Gross_Load < t2).Where(dataPredicate).Count());
-                    }
-                    else
-                    {
-                        Gross_Load_Dist.Add(highSpeedData.Where(x => x.Gross_Load >= t1).Where(dataPredicate).Count());
-                    }
-                    Console.WriteLine(Gross_Load_Dist[i]);
-                }
+                //不同区间车重车数量分布
+                List<int> GrossLoad_Dist = DataProcessing.GetSpeedDist(GrossLoad.Text, dataPredicate, highSpeedData).ToList();
                 try    //结果写入txt（以逗号分隔）
                 {
                     var fs = new FileStream("不同车重区间车辆数.txt", FileMode.Create);
                     var sw = new StreamWriter(fs, Encoding.Default);
-                    var writeString = $"{Gross_Load_Dist[0]}";
-                    for (int i = 1; i < Gross_Load_Div.Length; i++)
+                    var writeString = $"{GrossLoad_Dist[0]}";
+                    for (int i = 1; i < GrossLoad_Dist.Count; i++)
                     {
-                        writeString = $"{writeString},{Gross_Load_Dist[i]}";
+                        writeString = $"{writeString},{GrossLoad_Dist[i]}";
                     }
                     sw.Write(writeString);
                     sw.Close();
@@ -239,36 +208,60 @@ namespace WIMDataProcessingApp
                     Console.WriteLine(ex.Message);
                 }
 
-
                 //例子：
                 //var Hour_Div = new int[] { 0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22 };
 
-                int[] Hour_Div = Array.ConvertAll(HourDiv.Text.Split(','), s => int.Parse(s));
-                var Hour_Dist = new List<int>();
-
-                //不同区间小时分布
-                for (int i = 0; i < Hour_Div.Length; i++)
-                {
-                    t1 = Hour_Div[i];
-                    if (i != Hour_Div.Length - 1)
-                    {
-                        t2 = Hour_Div[i + 1];
-                        //TODO:Convert.ToDateTime(x.HSData_DT)中x.HSData_DT为空时会抛出异常
-                        Hour_Dist.Add(highSpeedData.Where(x => x.HSData_DT.Value.Hour >= t1 && x.HSData_DT.Value.Hour < t2).Where(dataPredicate).Count());
-                    }
-                    else
-                    {
-                        Hour_Dist.Add(highSpeedData.Where(x => x.HSData_DT.Value.Hour >= t1).Where(dataPredicate).Count());
-                    }
-                }
+                //不同区间小时车数量分布
+                List<int> Hour_Dist = DataProcessing.GetHourDist(Hour.Text, dataPredicate, highSpeedData).ToList();
                 try
                 {
                     var fs = new FileStream("不同小时区间车辆数.txt", FileMode.Create);
                     var sw = new StreamWriter(fs, Encoding.Default);
                     var writeString = $"{Hour_Dist[0]}";
-                    for (int i = 1; i < Hour_Div.Length; i++)
+                    for (int i = 1; i < Hour_Dist.Count; i++)
                     {
                         writeString = $"{writeString},{Hour_Dist[i]}";
+                    }
+                    sw.Write(writeString);
+                    sw.Close();
+                    fs.Close();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+
+                //不同区间小时平均车速分布
+                List<double?> HourSpeed_Dist = DataProcessing.GetHourAverageSpeedDist(Hour.Text, dataPredicate, highSpeedData).ToList();
+
+                try
+                {
+                    var fs = new FileStream("不同小时区间平均车速.txt", FileMode.Create);
+                    var sw = new StreamWriter(fs, Encoding.Default);
+                    var writeString = $"{Math.Round(Convert.ToDecimal(HourSpeed_Dist[0] ?? 0.0), 1)}";
+                    for (int i = 1; i < HourSpeed_Dist.Count; i++)
+                    {
+                        writeString = $"{writeString},{Math.Round(Convert.ToDecimal(HourSpeed_Dist[i] ?? 0.0), 1)}";
+                    }
+                    sw.Write(writeString);
+                    sw.Close();
+                    fs.Close();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+                //不同区间小时大于指定重量的车数量
+                var HourWeight_Dist = DataProcessing.GetCountsAboveCriticalWeightInDifferentHours(Hour.Text, Convert.ToInt32(CriticalWeight.Text),dataPredicate, highSpeedData).ToList();
+
+                try
+                {
+                    var fs = new FileStream($"不同区间小时大于{CriticalWeight.Text}kg车数量.txt", FileMode.Create);
+                    var sw = new StreamWriter(fs, Encoding.Default);
+                    var writeString = $"{HourWeight_Dist[0]}";
+                    for (int i = 1; i < HourWeight_Dist.Count; i++)
+                    {
+                        writeString = $"{writeString},{HourWeight_Dist[i]}";
                     }
                     sw.Write(writeString);
                     sw.Close();

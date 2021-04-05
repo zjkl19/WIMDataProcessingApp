@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:WIMDataProcessingApp"
         xmlns:sys1="http://schemas.microsoft.com/netfx/2009/xaml/presentation"
         mc:Ignorable="d"
-        Title="MainWindow" Height="300" Width="540">
+        Title="动态称重数据处理程序" Height="330" Width="540">
     <StackPanel >
 
         <StackPanel.Resources>
@@ -36,7 +36,11 @@
         </StackPanel>
         <StackPanel Orientation="Horizontal" Margin="{StaticResource defaultMargin}">
             <Label >时间段（用半角逗号分隔，仅支持整数）</Label>
-            <TextBox Width="240" Name="HourDiv" Text="0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22"></TextBox>
+            <TextBox Width="240" Name="Hour" Text="0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22"></TextBox>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Margin="{StaticResource defaultMargin}">
+            <Label >临界重量（kg，仅支持整数）</Label>
+            <TextBox Width="100" Name="CriticalWeight" Text="50000"></TextBox>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Margin="{StaticResource defaultMargin}">
             <Button Click="AutoReport_Click" Margin="{StaticResource buttonMargin}" Width="50">计算</Button>
