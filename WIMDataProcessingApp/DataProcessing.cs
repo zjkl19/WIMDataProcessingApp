@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -35,6 +36,17 @@ namespace WIMDataProcessingApp
             }
 
 
+        }
+
+        public static IEnumerable<int> GetLaneDist(string laneText,Expression<Func<HighSpeedData, bool>> dataPredicate, IQueryable<HighSpeedData> highSpeedData)
+        {
+            int temp;
+            int[] Lane_Div = Array.ConvertAll(laneText.Split(','), s => int.Parse(s));
+            for (int i = 0; i < Lane_Div.Length; i++)
+            {
+                temp = Lane_Div[i];
+                yield return highSpeedData.Where(x => x.Lane_Id == temp).Where(dataPredicate).Count();
+            }
         }
     }
 }

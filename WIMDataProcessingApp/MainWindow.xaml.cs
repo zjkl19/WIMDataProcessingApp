@@ -147,20 +147,14 @@ namespace WIMDataProcessingApp
 
                 //不同车道分布
                 //var Lane_Div = new int[] { 1, 2, 3, 4 };
-                int[] Lane_Div = Array.ConvertAll(Lane.Text.Split(','), s => int.Parse(s));
-                var Lane_Dist = new List<int>();
-                for (int i = 0; i < Lane_Div.Length; i++)
-                {
-                    t1 = Lane_Div[i];
-                    Lane_Dist.Add(highSpeedData.Where(x => x.Lane_Id == t1).Where(dataPredicate).Count());
-                    Console.WriteLine(Lane_Dist[i]);
-                }
+                List<int> Lane_Dist = DataProcessing.GetLaneDist(Lane.Text,dataPredicate, highSpeedData).ToList();
+
                 try
                 {
                     var fs = new FileStream("不同车道车辆数.txt", FileMode.Create);
                     var sw = new StreamWriter(fs, Encoding.Default);
                     var writeString = $"{Lane_Dist[0]}";
-                    for (int i = 1; i < Lane_Div.Length; i++)
+                    for (int i = 1; i < Lane_Dist.Count; i++)
                     {
                         writeString = $"{writeString},{Lane_Dist[i]}";
                     }
@@ -172,7 +166,6 @@ namespace WIMDataProcessingApp
                 {
                     Console.WriteLine(ex.Message);
                 }
-
 
                 int[] Speed_Div = Array.ConvertAll(Speed.Text.Split(','), s => int.Parse(s));
                 var Speed_Dist = new List<int>();
@@ -209,11 +202,89 @@ namespace WIMDataProcessingApp
                     Console.WriteLine(ex.Message);
                 }
 
+
+                //var Gross_Load_Div = new int[] { 0, 10_000, 20_000, 30_000 };
+                int[] Gross_Load_Div = Array.ConvertAll(GrossLoad.Text.Split(','), s => int.Parse(s));
+                var Gross_Load_Dist = new List<int>();
+                //不同区间车重分布
+                for (int i = 0; i < Gross_Load_Div.Length; i++)
+                {
+                    t1 = Gross_Load_Div[i];
+                    if (i != Gross_Load_Div.Length - 1)
+                    {
+                        t2 = Gross_Load_Div[i + 1];
+                        Gross_Load_Dist.Add(highSpeedData.Where(x => x.Gross_Load >= t1 && x.Gross_Load < t2).Where(dataPredicate).Count());
+                    }
+                    else
+                    {
+                        Gross_Load_Dist.Add(highSpeedData.Where(x => x.Gross_Load >= t1).Where(dataPredicate).Count());
+                    }
+                    Console.WriteLine(Gross_Load_Dist[i]);
+                }
+                try    //结果写入txt（以逗号分隔）
+                {
+                    var fs = new FileStream("不同车重区间车辆数.txt", FileMode.Create);
+                    var sw = new StreamWriter(fs, Encoding.Default);
+                    var writeString = $"{Gross_Load_Dist[0]}";
+                    for (int i = 1; i < Gross_Load_Div.Length; i++)
+                    {
+                        writeString = $"{writeString},{Gross_Load_Dist[i]}";
+                    }
+                    sw.Write(writeString);
+                    sw.Close();
+                    fs.Close();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+
+
+                //例子：
+                //var Hour_Div = new int[] { 0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22 };
+
+                int[] Hour_Div = Array.ConvertAll(HourDiv.Text.Split(','), s => int.Parse(s));
+                var Hour_Dist = new List<int>();
+
+                //不同区间小时分布
+                for (int i = 0; i < Hour_Div.Length; i++)
+                {
+                    t1 = Hour_Div[i];
+                    if (i != Hour_Div.Length - 1)
+                    {
+                        t2 = Hour_Div[i + 1];
+                        //TODO:Convert.ToDateTime(x.HSData_DT)中x.HSData_DT为空时会抛出异常
+                        Hour_Dist.Add(highSpeedData.Where(x => x.HSData_DT.Value.Hour >= t1 && x.HSData_DT.Value.Hour < t2).Where(dataPredicate).Count());
+                    }
+                    else
+                    {
+                        Hour_Dist.Add(highSpeedData.Where(x => x.HSData_DT.Value.Hour >= t1).Where(dataPredicate).Count());
+                    }
+                }
+                try
+                {
+                    var fs = new FileStream("不同小时区间车辆数.txt", FileMode.Create);
+                    var sw = new StreamWriter(fs, Encoding.Default);
+                    var writeString = $"{Hour_Dist[0]}";
+                    for (int i = 1; i < Hour_Div.Length; i++)
+                    {
+                        writeString = $"{writeString},{Hour_Dist[i]}";
+                    }
+                    sw.Write(writeString);
+                    sw.Close();
+                    fs.Close();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+
                 MessageBox.Show("运行完成！");
             }
         }
 
-        private void OpenReport_Click(object sender, RoutedEventArgs e)
+
+        private void ExportDailyTrafficVolume_Click(object sender, RoutedEventArgs e)
         {
             var startDataTime = StartDataTime.SelectedDate ?? DateTime.Now.AddDays(-1);
             var finishDataTime = FinishDataTime.SelectedDate ?? DateTime.Now;
@@ -273,6 +344,69 @@ namespace WIMDataProcessingApp
             }
 
  
+
+        }
+
+        private void ExportTopGrossLoad_Click(object sender, RoutedEventArgs e)
+        {
+            var startDataTime = StartDataTime.SelectedDate ?? DateTime.Now.AddDays(-1);
+            var finishDataTime = FinishDataTime.SelectedDate ?? DateTime.Now;
+            Expression<Func<HighSpeedData, bool>> dataPredicate = x => x.HSData_DT >= startDataTime && x.HSData_DT < finishDataTime;
+
+            using (var db = new HighSpeed_PROCEntities())
+            {
+
+                var highSpeedData = (
+                    from e1 in db.HS_Data_PROC
+                    select new HighSpeedData
+                    {
+                        Acceleration = e1.Acceleration,
+                        AxleGrp_Num = e1.AxleGrp_Num,
+                        Axle_Num = e1.Axle_Num,
+                        ExternInfo = e1.ExternInfo,
+                        F7Code = e1.F7Code,
+                        HSData_Id = e1.HSData_Id,
+                        Veh_Length = e1.Veh_Length,
+                        Veh_Type = e1.Veh_Type,
+                        LWheel_1_W = e1.LWheel_1_W,
+                        LWheel_2_W = e1.LWheel_2_W,
+                        LWheel_3_W = e1.LWheel_3_W,
+                        LWheel_4_W = e1.LWheel_4_W,
+                        LWheel_5_W = e1.LWheel_5_W,
+                        LWheel_6_W = e1.LWheel_6_W,
+                        LWheel_7_W = e1.LWheel_7_W,
+                        LWheel_8_W = e1.LWheel_8_W,
+                        Lane_Id = e1.Lane_Id,
+                        Oper_Direc = e1.Oper_Direc,
+                        Speed = e1.Speed,
+                        OverLoad_Sign = e1.OverLoad_Sign,
+                        RWheel_1_W = e1.RWheel_1_W,
+                        RWheel_2_W = e1.RWheel_2_W,
+                        RWheel_3_W = e1.RWheel_3_W,
+                        RWheel_4_W = e1.RWheel_4_W,
+                        RWheel_5_W = e1.RWheel_5_W,
+                        RWheel_6_W = e1.RWheel_6_W,
+                        RWheel_7_W = e1.RWheel_7_W,
+                        RWheel_8_W = e1.RWheel_8_W,
+                        Violation_Id = e1.Violation_Id,
+                        AxleDis1 = e1.AxleDis1,
+                        AxleDis2 = e1.AxleDis2,
+                        AxleDis3 = e1.AxleDis3,
+                        AxleDis4 = e1.AxleDis4,
+                        AxleDis5 = e1.AxleDis5,
+                        AxleDis6 = e1.AxleDis6,
+                        AxleDis7 = e1.AxleDis7,
+                        HSData_DT = e1.HSData_DT,
+                        Gross_Load = e1.Gross_Load
+                    }
+                    );
+
+                List<HighSpeedData> data = highSpeedData.Where(dataPredicate).OrderByDescending(x => x.Gross_Load).Take(10).ToList();
+                var temp = ExcelHelper.ExportTopGrossLoad(data);
+            }
+
+            //重量前10的车辆数据导入excel
+
 
         }
     }

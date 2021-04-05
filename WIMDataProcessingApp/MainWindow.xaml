@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:WIMDataProcessingApp"
         xmlns:sys1="http://schemas.microsoft.com/netfx/2009/xaml/presentation"
         mc:Ignorable="d"
-        Title="MainWindow" Height="225" Width="400">
+        Title="MainWindow" Height="300" Width="540">
     <StackPanel >
 
         <StackPanel.Resources>
@@ -23,6 +23,10 @@
             <DatePicker Width="100" Name="FinishDataTime" SelectedDate="11/1/2020"></DatePicker>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Margin="{StaticResource defaultMargin}">
+            <Label >车重（用半角逗号分隔，仅支持整数）</Label>
+            <TextBox Width="150" Name="GrossLoad" Text="0, 10000, 20000, 30000"></TextBox>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Margin="{StaticResource defaultMargin}">
             <Label >车道（用半角逗号分隔）</Label>
             <TextBox Width="150" Name="Lane" Text="1,2,3,4"></TextBox>
         </StackPanel>
@@ -31,8 +35,13 @@
             <TextBox Width="150" Name="Speed" Text="0,30,50,70"></TextBox>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Margin="{StaticResource defaultMargin}">
-            <Button Click="AutoReport_Click" Margin="{StaticResource buttonMargin}">计算</Button>
-            <Button  Click="OpenReport_Click" Margin="{StaticResource buttonMargin}">测试2</Button>
+            <Label >时间段（用半角逗号分隔，仅支持整数）</Label>
+            <TextBox Width="240" Name="HourDiv" Text="0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22"></TextBox>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Margin="{StaticResource defaultMargin}">
+            <Button Click="AutoReport_Click" Margin="{StaticResource buttonMargin}" Width="50">计算</Button>
+            <Button  Click="ExportDailyTrafficVolume_Click" Margin="{StaticResource buttonMargin}">导出每日交通流量</Button>
+            <Button  Click="ExportTopGrossLoad_Click" Margin="{StaticResource buttonMargin}">导出重量前10的车重数据</Button>
         </StackPanel>
    
     </StackPanel>
