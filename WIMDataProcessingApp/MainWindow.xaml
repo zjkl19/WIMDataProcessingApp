@@ -52,7 +52,7 @@
             <Button  Click="ExportTopGrossLoad_Click" Margin="{StaticResource buttonMargin}">导出重量前n的车重数据</Button>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Margin="{StaticResource defaultMargin}">
-            <Label Content="Copyright © 福建省建筑科学研究院 福建省建筑工程质量检测中心有限公司 2021" VerticalAlignment="Center"/>
+            <Label Content="Copyright © 福建省建筑科学研究院 福建省建筑工程质量检测中心有限公司 林迪南 2021" VerticalAlignment="Center"/>
         </StackPanel>
 
     </StackPanel>

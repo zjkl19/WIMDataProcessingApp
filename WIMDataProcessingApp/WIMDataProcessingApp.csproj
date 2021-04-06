@@ -150,6 +150,9 @@
       <DependentUpon>HighSpeedDbModel.edmx</DependentUpon>
       <LastGenOutput>HighSpeedDbModel.cs</LastGenOutput>
     </Content>
+    <Resource Include="动态称重数据处理程序使用说明.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

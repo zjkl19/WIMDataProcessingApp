@@ -1,0 +1,4 @@
+1、数据库名：HighSpeed_PROC
+2、表名：HS_Data_PROC，数据结构和表HS_Data相同
+3、将需要处理的数据复制到到HS_Data_PROC表中
+4、运行程序
