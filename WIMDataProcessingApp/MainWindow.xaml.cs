@@ -187,7 +187,7 @@ namespace WIMDataProcessingApp
 
                 //var Gross_Load_Div = new int[] { 0, 10_000, 20_000, 30_000 };
                 //不同区间车重车数量分布
-                List<int> GrossLoad_Dist = DataProcessing.GetSpeedDist(GrossLoad.Text, dataPredicate, highSpeedData).ToList();
+                List<int> GrossLoad_Dist = DataProcessing.GetGrossLoadDist(GrossLoad.Text, dataPredicate, highSpeedData).ToList();
                 try    //结果写入txt（以逗号分隔）
                 {
                     var fs = new FileStream("不同车重区间车辆数.txt", FileMode.Create);
