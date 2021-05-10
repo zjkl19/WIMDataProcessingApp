@@ -96,6 +96,27 @@ namespace WIMDataProcessingApp
                 }
             }
         }
+
+        //指定车道不同区间车重车数量分布
+        public static IEnumerable<int> GetGrossLoadDistByLane(string grossLoadText, int criticalLane,Expression<Func<HighSpeedData, bool>> dataPredicate, IQueryable<HighSpeedData> highSpeedData)
+        {
+            int t1, t2;    //临时变量
+            int[] Gross_Load_Div = Array.ConvertAll(grossLoadText.Split(','), s => int.Parse(s));
+            for (int i = 0; i < Gross_Load_Div.Length; i++)
+            {
+                t1 = Gross_Load_Div[i];
+                if (i != Gross_Load_Div.Length - 1)
+                {
+                    t2 = Gross_Load_Div[i + 1];
+                    yield return highSpeedData.Where(x => x.Gross_Load >= t1 && x.Gross_Load < t2).Where(dataPredicate).Where(x=>x.Lane_Id==criticalLane).Count();
+                }
+                else
+                {
+                    yield return highSpeedData.Where(x => x.Gross_Load >= t1).Where(dataPredicate).Where(x => x.Lane_Id == criticalLane).Count();
+                }
+            }
+        }
+
         //不同区间小时车数量分布
         public static IEnumerable<int> GetHourDist(string hourText, Expression<Func<HighSpeedData, bool>> dataPredicate, IQueryable<HighSpeedData> highSpeedData)
         {

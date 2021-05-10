@@ -165,6 +165,7 @@ namespace WIMDataProcessingApp
                     Console.WriteLine(ex.Message);
                 }
 
+
                 //不同区间车速车数量分布
                 List<int> Speed_Dist = DataProcessing.GetSpeedDist(Speed.Text, dataPredicate, highSpeedData).ToList();
                 try
@@ -206,6 +207,25 @@ namespace WIMDataProcessingApp
                     Console.WriteLine(ex.Message);
                 }
 
+                //指定车道不同区间车重车数量分布
+                List<int> GrossLoad_Dist_ByLane = DataProcessing.GetGrossLoadDistByLane(GrossLoad.Text, Convert.ToInt32(CriticalLane.Text),dataPredicate, highSpeedData).ToList();
+                try    //结果写入txt（以逗号分隔）
+                {
+                    var fs = new FileStream($"车道{Convert.ToInt32(CriticalLane.Text)}不同车重区间车辆数.txt", FileMode.Create);
+                    var sw = new StreamWriter(fs, Encoding.Default);
+                    var writeString = $"{GrossLoad_Dist_ByLane[0]}";
+                    for (int i = 1; i < GrossLoad_Dist_ByLane.Count; i++)
+                    {
+                        writeString = $"{writeString},{GrossLoad_Dist_ByLane[i]}";
+                    }
+                    sw.Write(writeString);
+                    sw.Close();
+                    fs.Close();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
                 //例子：
                 //var Hour_Div = new int[] { 0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22 };
 

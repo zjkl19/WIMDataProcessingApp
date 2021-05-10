@@ -15,15 +15,15 @@
         </StackPanel.Resources>
 
         <StackPanel Orientation="Horizontal" Margin="{StaticResource defaultMargin}">
-            <Label >开始时间（默认为昨天）</Label>
+            <Label >开始时间（默认为昨天，闭区间）</Label>
             <DatePicker Width="100" Name="StartDataTime" SelectedDate="10/1/2020"></DatePicker>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Margin="{StaticResource defaultMargin}">
-            <Label>结束时间（默认为今天）</Label>
+            <Label>结束时间（默认为今天，开区间）</Label>
             <DatePicker Width="100" Name="FinishDataTime" SelectedDate="11/1/2020"></DatePicker>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Margin="{StaticResource defaultMargin}">
-            <Label >车重（用半角逗号分隔，仅支持整数）</Label>
+            <Label >车重（用半角逗号分隔，仅支持整数，左闭右开，下同）</Label>
             <TextBox Width="150" Name="GrossLoad" Text="0, 10000, 20000, 30000"></TextBox>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Margin="{StaticResource defaultMargin}">
@@ -45,6 +45,10 @@
         <StackPanel Orientation="Horizontal" Margin="{StaticResource defaultMargin}">
             <Label >临界数量n（仅支持整数）</Label>
             <TextBox Width="100" Name="CriticalCount" Text="10"></TextBox>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Margin="{StaticResource defaultMargin}">
+            <Label >指定车道（仅支持整数）</Label>
+            <TextBox Width="100" Name="CriticalLane" Text="1"></TextBox>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Margin="{StaticResource defaultMargin}">
             <Button Click="Calc_Click" Margin="{StaticResource buttonMargin}" Width="50">计算</Button>
