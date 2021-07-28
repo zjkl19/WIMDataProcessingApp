@@ -208,24 +208,31 @@ namespace WIMDataProcessingApp
                 }
 
                 //指定车道不同区间车重车数量分布
-                List<int> GrossLoad_Dist_ByLane = DataProcessing.GetGrossLoadDistByLane(GrossLoad.Text, Convert.ToInt32(CriticalLane.Text),dataPredicate, highSpeedData).ToList();
-                try    //结果写入txt（以逗号分隔）
+
+                int[] GrossLoad_Dist_ByLane_Div = Array.ConvertAll(CriticalLane.Text.Split(','), s => int.Parse(s));
+
+                for (int i = 0; i < GrossLoad_Dist_ByLane_Div.Length; i++)
                 {
-                    var fs = new FileStream($"车道{Convert.ToInt32(CriticalLane.Text)}不同车重区间车辆数.txt", FileMode.Create);
-                    var sw = new StreamWriter(fs, Encoding.Default);
-                    var writeString = $"{GrossLoad_Dist_ByLane[0]}";
-                    for (int i = 1; i < GrossLoad_Dist_ByLane.Count; i++)
+                    List<int> GrossLoad_Dist_ByLane = DataProcessing.GetGrossLoadDistByLane(GrossLoad.Text, GrossLoad_Dist_ByLane_Div[i], dataPredicate, highSpeedData).ToList();
+                    try    //结果写入txt（以逗号分隔）
                     {
-                        writeString = $"{writeString},{GrossLoad_Dist_ByLane[i]}";
+                        var fs = new FileStream($"车道{GrossLoad_Dist_ByLane_Div[i]}不同车重区间车辆数.txt", FileMode.Create);
+                        var sw = new StreamWriter(fs, Encoding.Default);
+                        var writeString = $"{GrossLoad_Dist_ByLane[0]}";
+                        for (int j = 1; j < GrossLoad_Dist_ByLane.Count; j++)
+                        {
+                            writeString = $"{writeString},{GrossLoad_Dist_ByLane[j]}";
+                        }
+                        sw.Write(writeString);
+                        sw.Close();
+                        fs.Close();
                     }
-                    sw.Write(writeString);
-                    sw.Close();
-                    fs.Close();
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
+
                 //例子：
                 //var Hour_Div = new int[] { 0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22 };
 
