@@ -8,7 +8,8 @@ Created on Mon Apr 22 20:16:38 2019
 """
 import numpy as np
 
-
+import xlrd
+import xlwt
 
 
 #定义函数来显示柱状上的数值
@@ -80,17 +81,41 @@ def plotItem(plt,itemChosen):
 
     fontSize=15
 
-    totalDays=7    #总天数
 
-    saveFileNameList=[
-    '不同车重区间车辆数',
-    '不同车道车辆数',
-    '不同车速区间车辆数',
-    '周一至周日车辆数',
-    '不同小时区间车辆数',
-    '不同小时区间平均车速'
-    ]
+    dataExcel='动态称重.xlsx';dataSheet='Sheet1'
+    data=xlrd.open_workbook(dataExcel)
+    sh=data.sheet_by_name(dataSheet)
 
+    rowCount=0
+    
+    try:
+        while (len(sh.cell_value(rowCount+1,1)) >0):
+            rowCount=rowCount+1
+    except Exception:
+        print ("已读取行数" + str(rowCount))
+    
+
+    saveFileNameListExcelCol=1
+    y_dataListExcelCol=2
+    xticksPrefixListExcelCol=4
+    ylabelListExcelCol=5
+    xticksLabelPercentageExcelCol=6
+
+    #print(sh.cell_value(1,1))    #测试
+
+    # saveFileNameList=[
+    # '不同车重区间车辆数',
+    # '不同车道车辆数',
+    # '不同车速区间车辆数',
+    # '周一至周日车辆数',
+    # '不同小时区间车辆数',
+    # '不同小时区间平均车速'
+    # ]
+    
+    saveFileNameList=[]
+    for i in range(0,rowCount):
+        saveFileNameList.append(sh.cell_value(i+1,saveFileNameListExcelCol))
+    
     #车重
     #车道
     #车速
@@ -98,15 +123,22 @@ def plotItem(plt,itemChosen):
     #不同小时车辆总数
     #不同小时平均车速
     #不同时间>40t车辆数
-    y_dataList=[
-    [13482450,149080,11391,1717],
-    [3052526,3958354,3625292,3008466],
-    [1525950,6171423,5711250,236015],
-    [518094,572499,572126,557727,558882,509893,468823],
-    [368028,200179,179147,984252,1630541,1601930,1467507,1718669,1803411,1557823,1291456,841695],
-    [58.7,60.3,59.2,49.4,41.5,45.1,49.3,44.0,41.3,42.1,47.6,52.9],
-    [141,102,64,3,6,11,15,13,14,27,110,161]
-    ]
+    # y_dataList=[
+    # [13482450,149080,11391,1717],
+    # [3052526,3958354,3625292,3008466],
+    # [1525950,6171423,5711250,236015],
+    # [518094,572499,572126,557727,558882,509893,468823],
+    # [368028,200179,179147,984252,1630541,1601930,1467507,1718669,1803411,1557823,1291456,841695],
+    # [58.7,60.3,59.2,49.4,41.5,45.1,49.3,44.0,41.3,42.1,47.6,52.9],
+    # [141,102,64,3,6,11,15,13,14,27,110,161]
+    # ]
+    
+    y_dataList=[]
+    
+    for i in range(0,rowCount):
+        y_dataList.append(list(map(float,sh.cell_value(i+1,y_dataListExcelCol).split(','))))
+    
+
 
     ## 包含每个柱子对应值的序列
     #y_data = [2464623,38589,3826,444]    #车重
@@ -144,16 +176,20 @@ def plotItem(plt,itemChosen):
     #周一至周日
     #不同小时车辆总数
     #不同小时平均车速
-    xticksPrefixList=[
-    ['0～10t','10～20t','20～30t','30t以上'],
-    ['车道1','车道2','车道3','车道4'],
-    ['0～30km/h','30～50km/h','50～70km/h','70km/h以上'],
-    ['周一','周二','周三','周四','周五','周六','周日'],
-    ['0～2','2～4','4～6','6～8','8～10','10～12','12～14','14～16','16～18','18～20','20～22','22～24'],
-    ['0～2','2～4','4～6','6～8','8～10','10～12','12～14','14～16','16～18','18～20','20～22','22～24'],
-    ['0～2','2～4','4～6','6～8','8～10','10～12','12～14','14～16','16～18','18～20','20～22','22～24']
-    ]
-
+    # xticksPrefixList=[
+    # ['0～10t','10～20t','20～30t','30t以上'],
+    # ['车道1','车道2','车道3','车道4'],
+    # ['0～30km/h','30～50km/h','50～70km/h','70km/h以上'],
+    # ['周一','周二','周三','周四','周五','周六','周日'],
+    # ['0～2','2～4','4～6','6～8','8～10','10～12','12～14','14～16','16～18','18～20','20～22','22～24'],
+    # ['0～2','2～4','4～6','6～8','8～10','10～12','12～14','14～16','16～18','18～20','20～22','22～24'],
+    # ['0～2','2～4','4～6','6～8','8～10','10～12','12～14','14～16','16～18','18～20','20～22','22～24']
+    # ]
+    
+    xticksPrefixList=[]
+    for i in range(0,rowCount):
+        xticksPrefixList.append(list(map(str,sh.cell_value(i+1,xticksPrefixListExcelCol).split(',')))) 
+                      
     xticksPrefix=xticksPrefixList[itemChosen]
 
     #xticksPrefix=['0～10t','10～20t','20～30t','30t以上']    #车重
@@ -188,7 +224,9 @@ def plotItem(plt,itemChosen):
     #plt.xlabel("年份")
 
     #TODO:重构变量初始化
-    ylabelList=['数量','数量','数量','数量','数量','车速（km/h）']
+    
+    #ylabelList=['数量','数量','数量','数量','数量','车速（km/h）']
+    
     #ylabelList.append('数量')
     #ylabelList.append('数量')
     #ylabelList.append('数量')
@@ -198,6 +236,10 @@ def plotItem(plt,itemChosen):
 
     #plt.ylabel("车速（km/h）",fontsize=15)
     #plt.ylabel("数量",fontsize=15)
+
+    ylabelList=[]
+    for i in range(0,rowCount):
+        ylabelList.append(sh.cell_value(i+1,ylabelListExcelCol)) 
 
     plt.ylabel(ylabelList[itemChosen],fontsize=15)
 
@@ -221,13 +263,21 @@ def plotItem(plt,itemChosen):
     for i in range(1,len(xticksPrefix)):
         xticksLabel2=xticksLabel2+['%s'%(xticksPrefix[i])]
 
-    xticksLabelList.append(xticksLabel1)
-    xticksLabelList.append(xticksLabel1)
-    xticksLabelList.append(xticksLabel1)
-    xticksLabelList.append(xticksLabel2)
-    xticksLabelList.append(xticksLabel2)
-    xticksLabelList.append(xticksLabel2)
-    xticksLabelList.append(xticksLabel2)
+
+    xticksLabelList=[]
+    for i in range(0,rowCount):
+        if(sh.cell_value(i+1,xticksLabelPercentageExcelCol)=='是'):
+            xticksLabelList.append(xticksLabel1)
+        else:
+            xticksLabelList.append(xticksLabel2)
+
+    # xticksLabelList.append(xticksLabel1)
+    # xticksLabelList.append(xticksLabel1)
+    # xticksLabelList.append(xticksLabel1)
+    # xticksLabelList.append(xticksLabel2)
+    # xticksLabelList.append(xticksLabel2)
+    # xticksLabelList.append(xticksLabel2)
+    # xticksLabelList.append(xticksLabel2)
 
     xticksLabel=xticksLabelList[itemChosen]
 
@@ -256,7 +306,19 @@ import matplotlib.ticker as ticker
 
 #出现其他个数暂时用系统默认
 
-for i in range(0,6):        # 第二个实例
+dataExcel='动态称重.xlsx';dataSheet='Sheet1'
+data=xlrd.open_workbook(dataExcel)
+sh=data.sheet_by_name(dataSheet)
+
+rowCount=0
+
+try:
+    while (len(sh.cell_value(rowCount+1,1)) >0):
+        rowCount=rowCount+1
+except Exception:
+    print ("已读取行数" + str(rowCount))
+
+for i in range(0,rowCount):        # 第二个实例
 
     plotItem(plt,i)
     plt.close()
