@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:WIMDataProcessingApp"
         xmlns:sys1="http://schemas.microsoft.com/netfx/2009/xaml/presentation"
         mc:Ignorable="d"
-        Title="动态称重数据处理程序 v0.1" Height="450" Width="600">
+        Title="动态称重数据处理程序 v0.2" Height="550" Width="600">
     <StackPanel >
 
         <StackPanel.Resources>
@@ -15,12 +15,12 @@
         </StackPanel.Resources>
 
         <StackPanel Orientation="Horizontal" Margin="{StaticResource defaultMargin}">
-            <Label >开始时间（默认为昨天，闭区间）</Label>
-            <DatePicker Width="100" Name="StartDataTime" SelectedDate="10/1/2020"></DatePicker>
+            <Label >开始时间（闭区间）</Label>
+            <DatePicker Width="100" Name="StartDataTime" SelectedDate="6/1/2021"></DatePicker>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Margin="{StaticResource defaultMargin}">
-            <Label>结束时间（默认为今天，开区间）</Label>
-            <DatePicker Width="100" Name="FinishDataTime" SelectedDate="11/1/2020"></DatePicker>
+            <Label>结束时间（开区间）</Label>
+            <DatePicker Width="100" Name="FinishDataTime" SelectedDate="7/1/2021"></DatePicker>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Margin="{StaticResource defaultMargin}">
             <Label >不同车重区间车辆数（用半角逗号分隔，仅支持整数，左闭右开，下同）</Label>
@@ -28,7 +28,7 @@
         </StackPanel>
         <StackPanel Orientation="Horizontal" Margin="{StaticResource defaultMargin}">
             <Label >不同车道车辆数（用半角逗号分隔）</Label>
-            <TextBox Width="150" Name="Lane" Text="1,2,3,4"></TextBox>
+            <TextBox Width="150" Name="Lane" Text="1,2"></TextBox>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Margin="{StaticResource defaultMargin}">
             <Label >不同车速区间车辆数（用半角逗号分隔，仅支持整数）</Label>
@@ -39,7 +39,7 @@
             <TextBox Width="240" Name="Hour" Text="0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22"></TextBox>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Margin="{StaticResource defaultMargin}">
-            <Label >临界重量（kg，仅支持整数）</Label>
+            <Label >临界重量（kg，仅支持整数，不同区间小时大于指定重量的车数量，区间小时同上）</Label>
             <TextBox Width="100" Name="CriticalWeight" Text="50000"></TextBox>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Margin="{StaticResource defaultMargin}">
@@ -47,8 +47,12 @@
             <TextBox Width="100" Name="CriticalCount" Text="10"></TextBox>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Margin="{StaticResource defaultMargin}">
-            <Label >不同车道不同车重区间车辆数（用半角逗号分隔，仅支持整数，车重区间桐山）</Label>
+            <Label >不同车道不同车重区间车辆数（用半角逗号分隔，仅支持整数，车重区间同上）</Label>
             <TextBox Width="100" Name="CriticalLane" Text="1,2"></TextBox>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Margin="{StaticResource defaultMargin}">
+            <Label >大于指定重量车辆数统计（kg，仅支持整数，用半角逗号分隔）</Label>
+            <TextBox Width="100" Name="CustomWeight" Text="30000,55000"></TextBox>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Margin="{StaticResource defaultMargin}">
             <Button Click="Calc_Click" Margin="{StaticResource buttonMargin}" Width="50">计算</Button>

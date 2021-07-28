@@ -14,7 +14,7 @@ namespace WIMDataProcessingApp
         {
             int t;
             DailyTraffic dailyTraffic;
-            var currTime = StartDataTime;
+            DateTime currTime = StartDataTime;
 
             int[] Lane_Div = Array.ConvertAll(laneText.Split(','), s => int.Parse(s));
 
@@ -94,6 +94,33 @@ namespace WIMDataProcessingApp
                 {
                     yield return highSpeedData.Where(x => x.Gross_Load >= t1).Where(dataPredicate).Count();
                 }
+            }
+        }
+
+        //大于指定车重车数量
+        public static IEnumerable<int> GetGrossLoadCount(string customWeightText, Expression<Func<HighSpeedData, bool>> dataPredicate, IQueryable<HighSpeedData> highSpeedData)
+        {
+            int t1, t2;    //临时变量
+            int[] Gross_Load_Div = Array.ConvertAll(customWeightText.Split(','), s => int.Parse(s));
+            for (int i = 0; i < Gross_Load_Div.Length; i++)
+            {
+                t1 = Gross_Load_Div[i];
+
+                yield return highSpeedData.Where(x => x.Gross_Load > t1).Where(dataPredicate).Count();
+              
+            }
+        }
+
+        //指定车道大于指定车重车数量
+        public static IEnumerable<int> GetGrossLoadCountByLane(string customWeightText, int criticalLane, Expression<Func<HighSpeedData, bool>> dataPredicate, IQueryable<HighSpeedData> highSpeedData)
+        {
+            int t1;    //临时变量
+            int[] CustomWeight_Div = Array.ConvertAll(customWeightText.Split(','), s => int.Parse(s));
+            for (int i = 0; i < CustomWeight_Div.Length; i++)
+            {
+                t1 = CustomWeight_Div[i];
+                yield return highSpeedData.Where(x => x.Gross_Load > t1).Where(x => x.Lane_Id == criticalLane).Where(dataPredicate).Count();
+
             }
         }
 

@@ -209,19 +209,42 @@ namespace WIMDataProcessingApp
 
                 //指定车道不同区间车重车数量分布
 
-                int[] GrossLoad_Dist_ByLane_Div = Array.ConvertAll(CriticalLane.Text.Split(','), s => int.Parse(s));
+                int[] CriticalLane_Div = Array.ConvertAll(CriticalLane.Text.Split(','), s => int.Parse(s));
 
-                for (int i = 0; i < GrossLoad_Dist_ByLane_Div.Length; i++)
+                for (int i = 0; i < CriticalLane_Div.Length; i++)
                 {
-                    List<int> GrossLoad_Dist_ByLane = DataProcessing.GetGrossLoadDistByLane(GrossLoad.Text, GrossLoad_Dist_ByLane_Div[i], dataPredicate, highSpeedData).ToList();
+                    List<int> GrossLoad_Dist_ByLane = DataProcessing.GetGrossLoadDistByLane(GrossLoad.Text, CriticalLane_Div[i], dataPredicate, highSpeedData).ToList();
                     try    //结果写入txt（以逗号分隔）
                     {
-                        var fs = new FileStream($"车道{GrossLoad_Dist_ByLane_Div[i]}不同车重区间车辆数.txt", FileMode.Create);
+                        var fs = new FileStream($"车道{CriticalLane_Div[i]}不同车重区间车辆数.txt", FileMode.Create);
                         var sw = new StreamWriter(fs, Encoding.Default);
                         var writeString = $"{GrossLoad_Dist_ByLane[0]}";
                         for (int j = 1; j < GrossLoad_Dist_ByLane.Count; j++)
                         {
                             writeString = $"{writeString},{GrossLoad_Dist_ByLane[j]}";
+                        }
+                        sw.Write(writeString);
+                        sw.Close();
+                        fs.Close();
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
+                }
+
+                //指定车道大于指定车重车数量统计
+                for (int i = 0; i < CriticalLane_Div.Length; i++)
+                {
+                    List<int> CustomWeightCount = DataProcessing.GetGrossLoadCountByLane(CustomWeight.Text, CriticalLane_Div[i], dataPredicate, highSpeedData).ToList();
+                    try    //结果写入txt（以逗号分隔）
+                    {
+                        var fs = new FileStream($"车道{CriticalLane_Div[i]}大于指定车重车数量统计.txt", FileMode.Create);
+                        var sw = new StreamWriter(fs, Encoding.Default);
+                        var writeString = $"{CustomWeightCount[0]}({(decimal)CustomWeightCount[0] / Lane_Dist[i]:P})";
+                        for (int j = 1; j < CustomWeightCount.Count; j++)
+                        {
+                            writeString = $"{writeString},{CustomWeightCount[j]}({(decimal)CustomWeightCount[j] / Lane_Dist[i]:P})";
                         }
                         sw.Write(writeString);
                         sw.Close();
@@ -296,6 +319,27 @@ namespace WIMDataProcessingApp
                 {
                     Console.WriteLine(ex.Message);
                 }
+
+                //大于指定重量车辆数统计
+                List<int> GrossLoadCount = DataProcessing.GetGrossLoadCount(CustomWeight.Text, dataPredicate,highSpeedData).ToList();
+                try
+                {
+                    var fs = new FileStream("大于指定车重车辆数.txt", FileMode.Create);
+                    var sw = new StreamWriter(fs, Encoding.Default);
+                    var writeString = $"{GrossLoadCount[0]}";
+                    for (int i = 1; i < GrossLoadCount.Count; i++)
+                    {
+                        writeString = $"{writeString},{GrossLoadCount[i]}";
+                    }
+                    sw.Write(writeString);
+                    sw.Close();
+                    fs.Close();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+
 
                 MessageBox.Show("运行完成！");
             }
