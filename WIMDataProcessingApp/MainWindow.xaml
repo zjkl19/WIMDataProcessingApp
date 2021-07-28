@@ -52,6 +52,7 @@
         </StackPanel>
         <StackPanel Orientation="Horizontal" Margin="{StaticResource defaultMargin}">
             <Button Click="Calc_Click" Margin="{StaticResource buttonMargin}" Width="50">计算</Button>
+            <Button  Click="ExportDailyTrafficVolumeAndExportTopGrossLoad_Click" Margin="{StaticResource buttonMargin}">导出每日交通流量及重量前n的车重数据</Button>
             <Button  Click="ExportDailyTrafficVolume_Click" Margin="{StaticResource buttonMargin}">导出每日交通流量</Button>
             <Button  Click="ExportTopGrossLoad_Click" Margin="{StaticResource buttonMargin}">导出重量前n的车重数据</Button>
         </StackPanel>

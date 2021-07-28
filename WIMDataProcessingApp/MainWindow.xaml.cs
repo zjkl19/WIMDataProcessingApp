@@ -301,8 +301,23 @@ namespace WIMDataProcessingApp
             }
         }
 
+        private void ExportDailyTrafficVolumeAndExportTopGrossLoad_Click(object sender, RoutedEventArgs e)
+        {
+            ExportDailyTrafficVolume();
+            ExportTopGrossLoad();
+            MessageBox.Show("运行完成！");
+
+        }
 
         private void ExportDailyTrafficVolume_Click(object sender, RoutedEventArgs e)
+        {
+            ExportDailyTrafficVolume();
+
+            MessageBox.Show("运行完成！");
+
+        }
+
+        private void ExportDailyTrafficVolume()
         {
             var startDataTime = StartDataTime.SelectedDate ?? DateTime.Now.AddDays(-1);
             var finishDataTime = FinishDataTime.SelectedDate ?? DateTime.Now;
@@ -355,17 +370,23 @@ namespace WIMDataProcessingApp
                         Gross_Load = e1.Gross_Load
                     }
                     );
-                IEnumerable<DailyTraffic> dailyTrafficData = DataProcessing.GetDailyTraffic(Lane.Text,highSpeedData, startDataTime, finishDataTime);
+                IEnumerable<DailyTraffic> dailyTrafficData = DataProcessing.GetDailyTraffic(Lane.Text, highSpeedData, startDataTime, finishDataTime);
 
                 //每日交通流量信息数据导入excel
                 var temp = ExcelHelper.ExportDailyTrafficVolume(dailyTrafficData.ToList());
             }
+        }
+
+        //重量前10的车辆数据导入excel
+        private void ExportTopGrossLoad_Click(object sender, RoutedEventArgs e)
+        {
+            ExportTopGrossLoad();
 
             MessageBox.Show("运行完成！");
 
         }
-        //重量前10的车辆数据导入excel
-        private void ExportTopGrossLoad_Click(object sender, RoutedEventArgs e)
+
+        private void ExportTopGrossLoad()
         {
             var startDataTime = StartDataTime.SelectedDate ?? DateTime.Now.AddDays(-1);
             var finishDataTime = FinishDataTime.SelectedDate ?? DateTime.Now;
@@ -422,9 +443,6 @@ namespace WIMDataProcessingApp
                 List<HighSpeedData> data = highSpeedData.Where(dataPredicate).OrderByDescending(x => x.Gross_Load).Take(Convert.ToInt32(CriticalCount.Text)).ToList();
                 var temp = ExcelHelper.ExportTopGrossLoad(data);
             }
-            
-            MessageBox.Show("运行完成！");
-
         }
     }
 
