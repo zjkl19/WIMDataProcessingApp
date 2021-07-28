@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:WIMDataProcessingApp"
         xmlns:sys1="http://schemas.microsoft.com/netfx/2009/xaml/presentation"
         mc:Ignorable="d"
-        Title="动态称重数据处理程序 v0.2" Height="550" Width="600">
+        Title="动态称重数据处理程序 v0.3" Height="550" Width="600">
     <StackPanel >
 
         <StackPanel.Resources>

@@ -7,10 +7,10 @@ using System.Linq.Expressions;
 
 namespace WIMDataProcessingAppTestProject
 {
-    public class UnitTest1
+    public class DataProcessingTest
     {
         [Fact]
-        public void Test1()
+        public void GetLaneDist_Test()
         {
             //Arrange
             List<HighSpeedData> highSpeedData = new List<HighSpeedData> {
