@@ -35,6 +35,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Aspose.Words, Version=18.7.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>AsposeWordsNet\Aspose.Words.dll</HintPath>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
@@ -127,6 +131,7 @@
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>HighSpeedDbModel.Designer.cs</LastGenOutput>
     </EntityDeploy>
+    <None Include="AsposeWordsNet\.gitignore" />
     <None Include="HighSpeedDbModel.edmx.diagram">
       <DependentUpon>HighSpeedDbModel.edmx</DependentUpon>
     </None>
@@ -140,6 +145,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="AsposeWordsNet\Aspose.Words.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="HighSpeedDbModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>HighSpeedDbModel.Context.cs</LastGenOutput>
@@ -156,6 +164,9 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Templates\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

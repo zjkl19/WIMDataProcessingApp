@@ -13,5 +13,7 @@ namespace WIMDataProcessingApp
     /// </summary>
     public partial class App : Application
     {
+        public static string OutputFolder = "Output";
+        public static string TemplateFolder = "Templates";
     }
 }

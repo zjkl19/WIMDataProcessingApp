@@ -10,16 +10,16 @@ namespace WIMDataProcessingApp
     public class DataProcessing
     {
         //计算每日交通流量，注意，程序规定前50%的车道为上行数据
-        public static IEnumerable<DailyTraffic> GetDailyTraffic(string laneText, IQueryable<HighSpeedData> table, DateTime StartDataTime, DateTime FinishDataTime)
+        public static IEnumerable<DailyTraffic> GetDailyTraffic(string laneText, IQueryable<HighSpeedData> table, DateTime StartDateTime, DateTime FinishDateTime)
         {
             int t;
             DailyTraffic dailyTraffic;
-            DateTime currTime = StartDataTime;
+            DateTime currTime = StartDateTime;
 
             int[] Lane_Div = Array.ConvertAll(laneText.Split(','), s => int.Parse(s));
 
-            //var cc = table.Where(x => EntityFunctions.TruncateTime(x.HSData_DT)>= EntityFunctions.TruncateTime(StartDataTime)).Count();
-            while (currTime.AddDays(1) <= FinishDataTime)
+            //var cc = table.Where(x => EntityFunctions.TruncateTime(x.HSData_DT)>= EntityFunctions.TruncateTime(StartDateTime)).Count();
+            while (currTime.AddDays(1) <= FinishDateTime)
             {
                 var k1 = currTime;
                 var k2 = currTime.AddDays(1);

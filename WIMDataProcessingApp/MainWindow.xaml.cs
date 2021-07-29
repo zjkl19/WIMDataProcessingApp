@@ -1,4 +1,6 @@
-﻿using OfficeOpenXml;
+﻿using Aspose.Words;
+using Aspose.Words.Fields;
+using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -91,11 +93,11 @@ namespace WIMDataProcessingApp
         private void Calc_Click(object sender, RoutedEventArgs e)
         {
 
-            var startDataTime = StartDataTime.SelectedDate ?? DateTime.Now.AddDays(-1);
-            var finishDataTime = FinishDataTime.SelectedDate ?? DateTime.Now;
-            //var StartDataTime = new DateTime(2020, 10, 1, 0, 0, 0);
-            //var FinishDataTime = new DateTime(2020, 11, 1, 0, 0, 0);
-            Expression<Func<HighSpeedData, bool>> dataPredicate = x => x.HSData_DT >= startDataTime && x.HSData_DT < finishDataTime;
+            var startDateTime = StartDateTime.SelectedDate ?? DateTime.Now.AddDays(-1);
+            var finishDateTime = FinishDateTime.SelectedDate ?? DateTime.Now;
+            //var StartDateTime = new DateTime(2020, 10, 1, 0, 0, 0);
+            //var FinishDateTime = new DateTime(2020, 11, 1, 0, 0, 0);
+            Expression<Func<HighSpeedData, bool>> dataPredicate = x => x.HSData_DT >= startDateTime && x.HSData_DT < finishDateTime;
 
             using (var db = new HighSpeed_PROCEntities())
             {
@@ -558,7 +560,55 @@ namespace WIMDataProcessingApp
                     Debug.Print(ex.Message);
                 }
 
-                MessageBox.Show("运行完成！");
+                string templateFile = $"{App.TemplateFolder}\\大樟桥监测月报模板.docx";
+                string outputFile = $"{App.OutputFolder}\\{DateTime.Now:yyyyMMdd}自动生成的大樟桥监测月报.docx";
+
+                try
+                {
+                    var doc = new Document(templateFile);
+
+                    string[] MyDocumentVariables = new string[] { nameof(StartDateTime), nameof(FinishDateTime) };//文档中包含的所有“文档变量”，方便遍历
+                                                                                                                  //更新文档变量
+                    try
+                    {
+                        var variables = doc.Variables;
+                        variables[nameof(StartDateTime)] = startDateTime.ToString("yyyy年MM月dd日");
+                        variables[nameof(FinishDateTime)] = finishDateTime.AddDays(-1).ToString("yyyy年MM月dd日");
+                    }
+                    catch (Exception ex)
+                    {
+
+                        Debug.Print($"文档变量更新失败。信息{ex.Message}");
+                    }
+
+                    doc.UpdateFields();
+
+                    foreach (var v in doc.Range.Fields)
+                    {
+                        FieldDocVariable v1 = v as FieldDocVariable;
+                        if(v1!=null)
+                        {
+                            if (MyDocumentVariables.Contains(v1.VariableName))
+                            {
+                                v1.Unlink();
+                            }
+                        }
+
+                    }
+
+                    var builder = new DocumentBuilder(doc);
+                    doc.UpdateFields();
+                    doc.Save(outputFile, SaveFormat.Docx);
+                    _ = MessageBox.Show("成功导出报告！");
+                }
+                catch (Exception ex)
+                {
+
+                    Debug.Print($"警告：报告生成失败。信息{ex.Message}");
+                }
+                
+
+                _ = MessageBox.Show("运行完成！");
             }
         }
 
@@ -580,9 +630,9 @@ namespace WIMDataProcessingApp
 
         private void ExportDailyTrafficVolume()
         {
-            var startDataTime = StartDataTime.SelectedDate ?? DateTime.Now.AddDays(-1);
-            var finishDataTime = FinishDataTime.SelectedDate ?? DateTime.Now;
-            Expression<Func<HighSpeedData, bool>> dataPredicate = x => x.HSData_DT >= startDataTime && x.HSData_DT < finishDataTime;
+            var startDateTime = StartDateTime.SelectedDate ?? DateTime.Now.AddDays(-1);
+            var finishDateTime = FinishDateTime.SelectedDate ?? DateTime.Now;
+            Expression<Func<HighSpeedData, bool>> dataPredicate = x => x.HSData_DT >= startDateTime && x.HSData_DT < finishDateTime;
 
             using (var db = new HighSpeed_PROCEntities())
             {
@@ -631,7 +681,7 @@ namespace WIMDataProcessingApp
                         Gross_Load = e1.Gross_Load
                     }
                     );
-                IEnumerable<DailyTraffic> dailyTrafficData = DataProcessing.GetDailyTraffic(Lane.Text, highSpeedData, startDataTime, finishDataTime);
+                IEnumerable<DailyTraffic> dailyTrafficData = DataProcessing.GetDailyTraffic(Lane.Text, highSpeedData, startDateTime, finishDateTime);
 
                 //每日交通流量信息数据导入excel
                 var temp = ExcelHelper.ExportDailyTrafficVolume(dailyTrafficData.ToList());
@@ -649,9 +699,9 @@ namespace WIMDataProcessingApp
 
         private void ExportTopGrossLoad()
         {
-            var startDataTime = StartDataTime.SelectedDate ?? DateTime.Now.AddDays(-1);
-            var finishDataTime = FinishDataTime.SelectedDate ?? DateTime.Now;
-            Expression<Func<HighSpeedData, bool>> dataPredicate = x => x.HSData_DT >= startDataTime && x.HSData_DT < finishDataTime;
+            var startDateTime = StartDateTime.SelectedDate ?? DateTime.Now.AddDays(-1);
+            var finishDateTime = FinishDateTime.SelectedDate ?? DateTime.Now;
+            Expression<Func<HighSpeedData, bool>> dataPredicate = x => x.HSData_DT >= startDateTime && x.HSData_DT < finishDateTime;
 
             using (var db = new HighSpeed_PROCEntities())
             {
