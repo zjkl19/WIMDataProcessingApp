@@ -1,5 +1,6 @@
 ﻿using Aspose.Words;
 using Aspose.Words.Fields;
+using Aspose.Words.Tables;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
@@ -403,7 +404,7 @@ namespace WIMDataProcessingApp
                 }
 
 
-                SummaryString = $"不同车道车辆数：{Lane_Dist_WriteString}\n不同车速区间车辆数：{Speed_Dist_WriteString}\n不同车重区间车辆数：{GrossLoad_Dist_WriteString}\n指定车道不同区间车重车数量分布：{GrossLoadDistByLane_WriteString}\n指定车道大于指定车重车数量统计：{CustomWeightCount_WriteString}\n不同小时区间车辆数：{Hour_Dist_WriteString}\n不同区间小时平均车速分布：{HourSpeed_Dist_WriteString}\n不同区间小时大于指定重量的车数量：{HourWeight_Dist_WriteString}\n大于指定重量车辆数统计：{GrossLoadCount_WriteString}";
+
 
                 var sheetName = "Sheet1";
                 try
@@ -563,17 +564,51 @@ namespace WIMDataProcessingApp
                 string templateFile = $"{App.TemplateFolder}\\大樟桥监测月报模板.docx";
                 string outputFile = $"{App.OutputFolder}\\{DateTime.Now:yyyyMMdd}自动生成的大樟桥监测月报.docx";
 
+                var ShortFinishDateTime = finishDateTime;
+                var k = highSpeedData.Where(dataPredicate);
+
+                int TotalVehicleCount = highSpeedData.Where(dataPredicate).Count();
+                int Lane1VehicleCount = highSpeedData.Where(dataPredicate).Where(x => x.Lane_Id == 1).Count();
+                int Lane2VehicleCount = highSpeedData.Where(dataPredicate).Where(x => x.Lane_Id == 2).Count();
+                int DailyVehicleCount = Convert.ToInt32(Math.Round(TotalVehicleCount * 1.0m / (finishDateTime - startDateTime).Days));
+
+                List<int> CustomWeightCountx = DataProcessing.GetGrossLoadCountByLane(CustomWeight.Text, CriticalLane_Div[0], dataPredicate, highSpeedData).ToList();
+                int Lane1Vehicle30Count = CustomWeightCountx[0];
+                decimal Lane1Vehicle30Proportion = (decimal)CustomWeightCountx[0] / Lane_Dist[0];
+                int Lane1Vehicle55Count = CustomWeightCountx[1];
+                decimal Lane1Vehicle55Proportion = (decimal)CustomWeightCountx[1] / Lane_Dist[0];
+
+                CustomWeightCountx = DataProcessing.GetGrossLoadCountByLane(CustomWeight.Text, CriticalLane_Div[1], dataPredicate, highSpeedData).ToList();
+
+                int Lane2Vehicle30Count = CustomWeightCountx[0];
+                decimal Lane2Vehicle30Proportion = (decimal)CustomWeightCountx[0] / Lane_Dist[1];
+                int Lane2Vehicle55Count = CustomWeightCountx[1];
+                decimal Lane2Vehicle55Proportion = (decimal)CustomWeightCountx[1] / Lane_Dist[1];
+
                 try
                 {
                     var doc = new Document(templateFile);
 
-                    string[] MyDocumentVariables = new string[] { nameof(StartDateTime), nameof(FinishDateTime) };//文档中包含的所有“文档变量”，方便遍历
-                                                                                                                  //更新文档变量
+                    string[] MyDocumentVariables = new string[] { nameof(StartDateTime), nameof(FinishDateTime), nameof(ShortFinishDateTime), nameof(TotalVehicleCount), nameof(Lane1VehicleCount), nameof(Lane2VehicleCount), nameof(DailyVehicleCount), nameof(Lane1Vehicle30Count), nameof(Lane1Vehicle30Proportion), nameof(Lane1Vehicle55Count), nameof(Lane1Vehicle55Proportion), nameof(Lane2Vehicle30Count), nameof(Lane2Vehicle30Proportion), nameof(Lane2Vehicle55Count), nameof(Lane2Vehicle55Proportion) };//文档中包含的所有“文档变量”，方便遍历
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       //更新文档变量
                     try
                     {
                         var variables = doc.Variables;
                         variables[nameof(StartDateTime)] = startDateTime.ToString("yyyy年MM月dd日");
                         variables[nameof(FinishDateTime)] = finishDateTime.AddDays(-1).ToString("yyyy年MM月dd日");
+                        variables[nameof(ShortFinishDateTime)] = finishDateTime.AddDays(-1).ToString("MM月dd日");
+                        variables[nameof(TotalVehicleCount)] = TotalVehicleCount.ToString();
+                        variables[nameof(Lane1VehicleCount)] = Lane1VehicleCount.ToString();
+                        variables[nameof(Lane2VehicleCount)] = Lane2VehicleCount.ToString();
+                        variables[nameof(DailyVehicleCount)] = DailyVehicleCount.ToString();
+                        variables[nameof(Lane1Vehicle30Count)] = Lane1Vehicle30Count.ToString();
+                        variables[nameof(Lane1Vehicle30Proportion)] = Lane1Vehicle30Proportion.ToString("P");
+                        variables[nameof(Lane1Vehicle55Count)] = Lane1Vehicle55Count.ToString();
+                        variables[nameof(Lane1Vehicle55Proportion)] = Lane1Vehicle55Proportion.ToString("P");
+                        variables[nameof(Lane2Vehicle30Count)] = Lane2Vehicle30Count.ToString();
+                        variables[nameof(Lane2Vehicle30Proportion)] = Lane2Vehicle30Proportion.ToString("P");
+                        variables[nameof(Lane2Vehicle55Count)] = Lane2Vehicle55Count.ToString();
+                        variables[nameof(Lane2Vehicle55Proportion)] = Lane2Vehicle55Proportion.ToString("P");
                     }
                     catch (Exception ex)
                     {
@@ -586,7 +621,7 @@ namespace WIMDataProcessingApp
                     foreach (var v in doc.Range.Fields)
                     {
                         FieldDocVariable v1 = v as FieldDocVariable;
-                        if(v1!=null)
+                        if (v1 != null)
                         {
                             if (MyDocumentVariables.Contains(v1.VariableName))
                             {
@@ -597,6 +632,59 @@ namespace WIMDataProcessingApp
                     }
 
                     var builder = new DocumentBuilder(doc);
+
+                    try
+                    {
+                        var topGrossLoadtable1 = doc.GetChildNodes(NodeType.Table, true)[6] as Aspose.Words.Tables.Table;
+                        var topGrossLoadtable2 = doc.GetChildNodes(NodeType.Table, true)[7] as Aspose.Words.Tables.Table;    //续上一张表
+                        List<HighSpeedData> data = highSpeedData.Where(dataPredicate).OrderByDescending(x => x.Gross_Load).Take(Convert.ToInt32(10)).ToList();
+
+                        for (int i = 0; i < 10; i++)
+                        {
+
+                            builder.MoveTo(topGrossLoadtable1.Rows[i + 1].Cells[1].FirstParagraph);
+                            builder.Write($"{data[i].Lane_Id}");
+                            builder.MoveTo(topGrossLoadtable1.Rows[i + 1].Cells[2].FirstParagraph);
+                            builder.Write($"{data[i].HSData_DT}");
+                            builder.MoveTo(topGrossLoadtable1.Rows[i + 1].Cells[3].FirstParagraph);
+                            builder.Write($"{data[i].Axle_Num}");
+                            builder.MoveTo(topGrossLoadtable1.Rows[i + 1].Cells[4].FirstParagraph);
+                            builder.Write($"{data[i].Gross_Load}");
+                            builder.MoveTo(topGrossLoadtable1.Rows[i + 1].Cells[5].FirstParagraph);
+                            builder.Write($"{data[i].Speed}");
+
+                            builder.MoveTo(topGrossLoadtable2.Rows[i + 1].Cells[1].FirstParagraph);
+                            builder.Write($"{data[i].LWheel_1_W + data[i].RWheel_1_W}");
+                            builder.MoveTo(topGrossLoadtable2.Rows[i + 1].Cells[2].FirstParagraph);
+                            builder.Write($"{data[i].LWheel_2_W + data[i].RWheel_2_W}");
+                            builder.MoveTo(topGrossLoadtable2.Rows[i + 1].Cells[3].FirstParagraph);
+                            builder.Write($"{data[i].LWheel_3_W + data[i].RWheel_3_W}");
+                            builder.MoveTo(topGrossLoadtable2.Rows[i + 1].Cells[4].FirstParagraph);
+                            builder.Write($"{data[i].LWheel_4_W + data[i].RWheel_4_W}");
+                            builder.MoveTo(topGrossLoadtable2.Rows[i + 1].Cells[5].FirstParagraph);
+                            builder.Write($"{data[i].LWheel_5_W + data[i].RWheel_5_W}");
+                            builder.MoveTo(topGrossLoadtable2.Rows[i + 1].Cells[6].FirstParagraph);
+                            builder.Write($"{data[i].LWheel_6_W + data[i].RWheel_6_W}");
+                            builder.MoveTo(topGrossLoadtable2.Rows[i + 1].Cells[7].FirstParagraph);
+                            builder.Write($"{data[i].AxleDis1}");
+                            builder.MoveTo(topGrossLoadtable2.Rows[i + 1].Cells[8].FirstParagraph);
+                            builder.Write($"{data[i].AxleDis2}");
+                            builder.MoveTo(topGrossLoadtable2.Rows[i + 1].Cells[9].FirstParagraph);
+                            builder.Write($"{data[i].AxleDis3}");
+                            builder.MoveTo(topGrossLoadtable2.Rows[i + 1].Cells[10].FirstParagraph);
+                            builder.Write($"{data[i].AxleDis4}");
+                            builder.MoveTo(topGrossLoadtable2.Rows[i + 1].Cells[11].FirstParagraph);
+                            builder.Write($"{data[i].AxleDis5}");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+
+                        Debug.Print($"警告：前10最重车辆参数信息插入失败。信息{ex.Message}");
+                    }
+
+
+
                     doc.UpdateFields();
                     doc.Save(outputFile, SaveFormat.Docx);
                     _ = MessageBox.Show("成功导出报告！");
@@ -606,7 +694,7 @@ namespace WIMDataProcessingApp
 
                     Debug.Print($"警告：报告生成失败。信息{ex.Message}");
                 }
-                
+
 
                 _ = MessageBox.Show("运行完成！");
             }
