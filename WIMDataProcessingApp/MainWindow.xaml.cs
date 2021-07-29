@@ -666,15 +666,15 @@ namespace WIMDataProcessingApp
                             builder.MoveTo(topGrossLoadtable2.Rows[i + 1].Cells[6].FirstParagraph);
                             builder.Write($"{data[i].LWheel_6_W + data[i].RWheel_6_W}");
                             builder.MoveTo(topGrossLoadtable2.Rows[i + 1].Cells[7].FirstParagraph);
-                            builder.Write($"{data[i].AxleDis1}");
+                            builder.Write($"{Math.Round(Convert.ToDecimal(data[i].AxleDis1 ?? 0.0) / 1000, 2)}"); ;
                             builder.MoveTo(topGrossLoadtable2.Rows[i + 1].Cells[8].FirstParagraph);
-                            builder.Write($"{data[i].AxleDis2}");
+                            builder.Write($"{Math.Round(Convert.ToDecimal(data[i].AxleDis2 ?? 0.0) / 1000, 2)}");
                             builder.MoveTo(topGrossLoadtable2.Rows[i + 1].Cells[9].FirstParagraph);
-                            builder.Write($"{data[i].AxleDis3}");
+                            builder.Write($"{Math.Round(Convert.ToDecimal(data[i].AxleDis3 ?? 0.0) / 1000, 2)}");
                             builder.MoveTo(topGrossLoadtable2.Rows[i + 1].Cells[10].FirstParagraph);
-                            builder.Write($"{data[i].AxleDis4}");
+                            builder.Write($"{Math.Round(Convert.ToDecimal(data[i].AxleDis4 ?? 0.0) / 1000, 2)}");
                             builder.MoveTo(topGrossLoadtable2.Rows[i + 1].Cells[11].FirstParagraph);
-                            builder.Write($"{data[i].AxleDis5}");
+                            builder.Write($"{Math.Round(Convert.ToDecimal(data[i].AxleDis5 ?? 0.0) / 1000, 2)}");
                         }
                     }
                     catch (Exception ex)
