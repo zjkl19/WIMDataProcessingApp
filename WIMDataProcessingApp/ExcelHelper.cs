@@ -95,6 +95,7 @@ namespace WIMDataProcessingApp
                     worksheet.Cells[1, 13].Value = "轴6重"; worksheet.Cells[1, 14].Value = "轴距1";
                     worksheet.Cells[1, 15].Value = "轴距2"; worksheet.Cells[1, 16].Value = "轴距3";
                     worksheet.Cells[1, 17].Value = "轴距4"; worksheet.Cells[1, 18].Value = "轴距5";
+                    worksheet.Cells[1, 19].Value = "车牌号";
                     for (int i = 0; i < data.Count; i++)
                     {
                         worksheet.Cells[i + 2, 1].Value = i + 1; worksheet.Cells[i + 2, 2].Value = (data[i].HSData_DT ?? DateTime.Now).ToString("g");
@@ -114,6 +115,7 @@ namespace WIMDataProcessingApp
                         worksheet.Cells[i + 2, 16].Value = Math.Round((data[i].AxleDis3 ?? 0.00m) * 0.001m, 2);
                         worksheet.Cells[i + 2, 17].Value = Math.Round((data[i].AxleDis4 ?? 0.00m) * 0.001m, 2);
                         worksheet.Cells[i + 2, 18].Value = Math.Round((data[i].AxleDis5 ?? 0.00m) * 0.001m, 2);
+                        worksheet.Cells[i + 2, 19].Value = (data[i].License_Plate ?? string.Empty).ToString();
                     }
                     package.Save();
                 }

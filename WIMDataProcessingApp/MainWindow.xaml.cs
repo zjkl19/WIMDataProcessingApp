@@ -144,7 +144,8 @@ namespace WIMDataProcessingApp
                         AxleDis6 = e1.AxleDis6,
                         AxleDis7 = e1.AxleDis7,
                         HSData_DT = e1.HSData_DT,
-                        Gross_Load = e1.Gross_Load
+                        Gross_Load = e1.Gross_Load,
+                        License_Plate=e1.License_Plate
                     }
                     );
                 #endregion;
@@ -766,7 +767,8 @@ namespace WIMDataProcessingApp
                         AxleDis6 = e1.AxleDis6,
                         AxleDis7 = e1.AxleDis7,
                         HSData_DT = e1.HSData_DT,
-                        Gross_Load = e1.Gross_Load
+                        Gross_Load = e1.Gross_Load,
+                        License_Plate=e1.License_Plate
                     }
                     );
                 IEnumerable<DailyTraffic> dailyTrafficData = DataProcessing.GetDailyTraffic(Lane.Text, highSpeedData, startDateTime, finishDateTime);
@@ -835,7 +837,9 @@ namespace WIMDataProcessingApp
                         AxleDis6 = e1.AxleDis6,
                         AxleDis7 = e1.AxleDis7,
                         HSData_DT = e1.HSData_DT,
-                        Gross_Load = e1.Gross_Load
+                        Gross_Load = e1.Gross_Load,
+                        License_Plate=e1.License_Plate
+                        
                     }
                     );
 
