@@ -396,12 +396,12 @@ namespace WIMDataProcessingApp
                     Console.WriteLine(ex.Message);
                 }
 
-                FileInfo file = new FileInfo("动态称重.xlsx");
+                FileInfo file = new FileInfo("动态称重.xlsx");    //WIMToPythonPlot
 
                 if (file.Exists)
                 {
                     file.Delete();
-                    file = new FileInfo("导出的交通流量数据.xlsx");
+                    file = new FileInfo("动态称重.xlsx");
                 }
 
 
@@ -453,7 +453,7 @@ namespace WIMDataProcessingApp
 
                         }
 
-                        worksheet.Cells[2, 5].Value = tempStr;
+                        worksheet.Cells[2, 5].Value = Gross_Load_Div_XlabelString;
                         worksheet.Cells[2, 6].Value = "数量";
                         worksheet.Cells[2, 7].Value = "是";
 
