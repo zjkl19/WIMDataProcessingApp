@@ -396,176 +396,182 @@ namespace WIMDataProcessingApp
                     Console.WriteLine(ex.Message);
                 }
 
-                var WIMToPythonPlotFileName = "动态称重.xlsx";
+                ExportToExcelForPythonPlot(dataPredicate, highSpeedData, Lane_Dist_WriteString, Speed_Dist_WriteString, GrossLoad_Dist_WriteString, CriticalLane_Div, Hour_Dist_WriteString);
 
-                FileInfo file = new FileInfo(WIMToPythonPlotFileName);
-
-                if (file.Exists)
-                {
-                    file.Delete();
-                    file = new FileInfo(WIMToPythonPlotFileName);
-                }
-
-
-                var sheetName = "Sheet1";
-                try
-                {
-                    using (var package = new ExcelPackage(file))
-                    {
-                        //var worksheet = package.Workbook.Worksheets.Add(sheetName);    //新建
-                        //var worksheet = package.Workbook.Worksheets[sheetName];    //已有
-                        var worksheet = package.Workbook.Worksheets.Add(sheetName);
-
-                        worksheet.Cells[1, 1].Value = "序号";
-                        worksheet.Cells[1, 2].Value = "文件名";
-                        worksheet.Cells[1, 3].Value = "数值";
-                        worksheet.Cells[1, 4].Value = "数值类型";
-                        worksheet.Cells[1, 5].Value = "x轴标签";
-                        worksheet.Cells[1, 6].Value = "y轴标签";
-                        worksheet.Cells[1, 6].Value = "x轴标签标注占比";
-
-                        worksheet.Cells[2, 2].Value = "不同车重区间车辆数";
-                        worksheet.Cells[2, 3].Value = GrossLoad_Dist_WriteString;
-                        worksheet.Cells[2, 4].Value = "int";
-
-
-                        //警告：仅支持整数
-                        //new int[] { 0, 10_000, 20_000, 30_000 };
-                        string tempStr = string.Empty;
-
-                        string Gross_Load_Div_XlabelString = string.Empty;
-                        int[] Gross_Load_Div = Array.ConvertAll(GrossLoad.Text.Split(','), s => int.Parse(s));
-
-                        for (int i = 0; i < Gross_Load_Div.Length; i++)
-                        {
-                            if (i == 0)
-                            {
-                                Gross_Load_Div_XlabelString = $"0～{Gross_Load_Div[1] / 1000}t";
-                            }
-                            else if (i != Gross_Load_Div.Length - 1)
-                            {
-                                Gross_Load_Div_XlabelString = $"{Gross_Load_Div_XlabelString},{Gross_Load_Div[i] / 1000}～{Gross_Load_Div[i + 1] / 1000}t";
-                            }
-                            else
-                            {
-                                Gross_Load_Div_XlabelString = $"{Gross_Load_Div_XlabelString},{Gross_Load_Div[i] / 1000}t以上";
-                            }
-
-                        }
-
-                        worksheet.Cells[2, 5].Value = Gross_Load_Div_XlabelString;
-                        worksheet.Cells[2, 6].Value = "数量";
-                        worksheet.Cells[2, 7].Value = "是";
-
-                        worksheet.Cells[3, 2].Value = "不同车道车辆数";
-                        worksheet.Cells[3, 3].Value = Lane_Dist_WriteString;
-                        worksheet.Cells[3, 4].Value = "int";
-
-                        tempStr = string.Empty;
-                        int[] Lane_Div = Array.ConvertAll(Lane.Text.Split(','), s => int.Parse(s));
-                        for (int i = 0; i < Lane_Div.Length; i++)
-                        {
-                            if (i == 0)
-                            {
-                                tempStr = $"车道{Lane_Div[0]}";
-                            }
-                            else
-                            {
-                                tempStr = $"{tempStr},车道{Lane_Div[i]}";
-                            }
-
-                        }
-
-                        string Lane_Dist_Xlabeltring = tempStr;
-                        worksheet.Cells[3, 5].Value = Lane_Dist_Xlabeltring;
-                        worksheet.Cells[3, 6].Value = "数量";
-                        worksheet.Cells[3, 7].Value = "是";
-
-                        worksheet.Cells[4, 2].Value = "不同车道车辆数";
-                        worksheet.Cells[4, 3].Value = Speed_Dist_WriteString;
-                        worksheet.Cells[4, 4].Value = "int";
-
-                        tempStr = string.Empty;
-                        int[] Speed_Div = Array.ConvertAll(Speed.Text.Split(','), s => int.Parse(s));
-                        for (int i = 0; i < Speed_Div.Length; i++)
-                        {
-                            if (i == 0)
-                            {
-                                tempStr = $"0～{Speed_Div[1]}km/h";
-                            }
-                            else if (i != Speed_Div.Length - 1)
-                            {
-                                tempStr = $"{tempStr},{Speed_Div[i]}～{Speed_Div[i + 1] }km/h";
-                            }
-                            else
-                            {
-                                tempStr = $"{tempStr},{Speed_Div[i]}km/h以上";
-                            }
-
-                        }
-
-                        worksheet.Cells[4, 5].Value = tempStr;
-                        worksheet.Cells[4, 6].Value = "数量";
-                        worksheet.Cells[4, 7].Value = "是";
-
-
-                        worksheet.Cells[5, 2].Value = "不同小时区间车辆数";
-                        worksheet.Cells[5, 3].Value = Hour_Dist_WriteString;
-                        worksheet.Cells[5, 4].Value = "int";
-
-                        tempStr = string.Empty;
-                        int[] Hour_Div = Array.ConvertAll(Hour.Text.Split(','), s => int.Parse(s));
-                        for (int i = 0; i < Hour_Div.Length; i++)
-                        {
-                            if (i == 0)
-                            {
-                                tempStr = $"0～{Hour_Div[1]}h";
-                            }
-                            else if (i != Hour_Div.Length - 1)
-                            {
-                                tempStr = $"{tempStr},{Hour_Div[i]}～{Hour_Div[i + 1] }";
-                            }
-                            else
-                            {
-                                tempStr = $"{tempStr},{Hour_Div[i]}～24";
-                            }
-                        }
-
-                        worksheet.Cells[5, 5].Value = tempStr;
-                        worksheet.Cells[5, 6].Value = "数量";
-                        worksheet.Cells[5, 7].Value = "否";
-
-                        int currRow = 5;
-
-                        for (int i = 0; i < CriticalLane_Div.Length; i++)
-                        {
-                            worksheet.Cells[currRow, 2].Value = $"车道{CriticalLane_Div[i]}不同车重区间车辆数";
-
-                            List<int> GrossLoad_Dist_ByLane = DataProcessing.GetGrossLoadDistByLane(GrossLoad.Text, CriticalLane_Div[i], dataPredicate, highSpeedData).ToList();
-
-
-                            worksheet.Cells[currRow, 3].Value = string.Join(",", GrossLoad_Dist_ByLane);
-                            worksheet.Cells[currRow, 4].Value = "int";
-
-                            worksheet.Cells[currRow, 5].Value = Gross_Load_Div_XlabelString;
-                            worksheet.Cells[currRow, 6].Value = "数量";
-                            worksheet.Cells[currRow, 7].Value = "否";
-                            currRow++;
-                        }
-
-
-                        package.Save();
-                    }
-
-                }
-                catch (Exception ex)
-                {
-                    Debug.Print(ex.Message);
-                }
-                
                 ExportToDocx(startDateTime, finishDateTime, dataPredicate, highSpeedData, Lane_Dist, CriticalLane_Div);
 
                 _ = MessageBox.Show("运行完成！");
+            }
+        }
+
+        //导出结果到Excel用于后期python作图
+        private void ExportToExcelForPythonPlot(Expression<Func<HighSpeedData, bool>> dataPredicate, IQueryable<HighSpeedData> highSpeedData, string Lane_Dist_WriteString, string Speed_Dist_WriteString, string GrossLoad_Dist_WriteString, int[] CriticalLane_Div, string Hour_Dist_WriteString)
+        {
+            var WIMToPythonPlotFileName = "动态称重.xlsx";
+
+            FileInfo file = new FileInfo(WIMToPythonPlotFileName);
+
+            if (file.Exists)
+            {
+                file.Delete();
+                file = new FileInfo(WIMToPythonPlotFileName);
+            }
+
+
+            var sheetName = "Sheet1";
+            try
+            {
+                using (var package = new ExcelPackage(file))
+                {
+                    //var worksheet = package.Workbook.Worksheets.Add(sheetName);    //新建
+                    //var worksheet = package.Workbook.Worksheets[sheetName];    //已有
+                    var worksheet = package.Workbook.Worksheets.Add(sheetName);
+
+                    worksheet.Cells[1, 1].Value = "序号";
+                    worksheet.Cells[1, 2].Value = "文件名";
+                    worksheet.Cells[1, 3].Value = "数值";
+                    worksheet.Cells[1, 4].Value = "数值类型";
+                    worksheet.Cells[1, 5].Value = "x轴标签";
+                    worksheet.Cells[1, 6].Value = "y轴标签";
+                    worksheet.Cells[1, 6].Value = "x轴标签标注占比";
+
+                    worksheet.Cells[2, 2].Value = "不同车重区间车辆数";
+                    worksheet.Cells[2, 3].Value = GrossLoad_Dist_WriteString;
+                    worksheet.Cells[2, 4].Value = "int";
+
+
+                    //警告：仅支持整数
+                    //new int[] { 0, 10_000, 20_000, 30_000 };
+                    string tempStr = string.Empty;
+
+                    string Gross_Load_Div_XlabelString = string.Empty;
+                    int[] Gross_Load_Div = Array.ConvertAll(GrossLoad.Text.Split(','), s => int.Parse(s));
+
+                    for (int i = 0; i < Gross_Load_Div.Length; i++)
+                    {
+                        if (i == 0)
+                        {
+                            Gross_Load_Div_XlabelString = $"0～{Gross_Load_Div[1] / 1000}t";
+                        }
+                        else if (i != Gross_Load_Div.Length - 1)
+                        {
+                            Gross_Load_Div_XlabelString = $"{Gross_Load_Div_XlabelString},{Gross_Load_Div[i] / 1000}～{Gross_Load_Div[i + 1] / 1000}t";
+                        }
+                        else
+                        {
+                            Gross_Load_Div_XlabelString = $"{Gross_Load_Div_XlabelString},{Gross_Load_Div[i] / 1000}t以上";
+                        }
+
+                    }
+
+                    worksheet.Cells[2, 5].Value = Gross_Load_Div_XlabelString;
+                    worksheet.Cells[2, 6].Value = "数量";
+                    worksheet.Cells[2, 7].Value = "是";
+
+                    worksheet.Cells[3, 2].Value = "不同车道车辆数";
+                    worksheet.Cells[3, 3].Value = Lane_Dist_WriteString;
+                    worksheet.Cells[3, 4].Value = "int";
+
+                    tempStr = string.Empty;
+                    int[] Lane_Div = Array.ConvertAll(Lane.Text.Split(','), s => int.Parse(s));
+                    for (int i = 0; i < Lane_Div.Length; i++)
+                    {
+                        if (i == 0)
+                        {
+                            tempStr = $"车道{Lane_Div[0]}";
+                        }
+                        else
+                        {
+                            tempStr = $"{tempStr},车道{Lane_Div[i]}";
+                        }
+
+                    }
+
+                    string Lane_Dist_Xlabeltring = tempStr;
+                    worksheet.Cells[3, 5].Value = Lane_Dist_Xlabeltring;
+                    worksheet.Cells[3, 6].Value = "数量";
+                    worksheet.Cells[3, 7].Value = "是";
+
+                    worksheet.Cells[4, 2].Value = "不同车道车辆数";
+                    worksheet.Cells[4, 3].Value = Speed_Dist_WriteString;
+                    worksheet.Cells[4, 4].Value = "int";
+
+                    tempStr = string.Empty;
+                    int[] Speed_Div = Array.ConvertAll(Speed.Text.Split(','), s => int.Parse(s));
+                    for (int i = 0; i < Speed_Div.Length; i++)
+                    {
+                        if (i == 0)
+                        {
+                            tempStr = $"0～{Speed_Div[1]}km/h";
+                        }
+                        else if (i != Speed_Div.Length - 1)
+                        {
+                            tempStr = $"{tempStr},{Speed_Div[i]}～{Speed_Div[i + 1] }km/h";
+                        }
+                        else
+                        {
+                            tempStr = $"{tempStr},{Speed_Div[i]}km/h以上";
+                        }
+
+                    }
+
+                    worksheet.Cells[4, 5].Value = tempStr;
+                    worksheet.Cells[4, 6].Value = "数量";
+                    worksheet.Cells[4, 7].Value = "是";
+
+
+                    worksheet.Cells[5, 2].Value = "不同小时区间车辆数";
+                    worksheet.Cells[5, 3].Value = Hour_Dist_WriteString;
+                    worksheet.Cells[5, 4].Value = "int";
+
+                    tempStr = string.Empty;
+                    int[] Hour_Div = Array.ConvertAll(Hour.Text.Split(','), s => int.Parse(s));
+                    for (int i = 0; i < Hour_Div.Length; i++)
+                    {
+                        if (i == 0)
+                        {
+                            tempStr = $"0～{Hour_Div[1]}h";
+                        }
+                        else if (i != Hour_Div.Length - 1)
+                        {
+                            tempStr = $"{tempStr},{Hour_Div[i]}～{Hour_Div[i + 1] }";
+                        }
+                        else
+                        {
+                            tempStr = $"{tempStr},{Hour_Div[i]}～24";
+                        }
+                    }
+
+                    worksheet.Cells[5, 5].Value = tempStr;
+                    worksheet.Cells[5, 6].Value = "数量";
+                    worksheet.Cells[5, 7].Value = "否";
+
+                    int currRow = 5;
+
+                    for (int i = 0; i < CriticalLane_Div.Length; i++)
+                    {
+                        worksheet.Cells[currRow, 2].Value = $"车道{CriticalLane_Div[i]}不同车重区间车辆数";
+
+                        List<int> GrossLoad_Dist_ByLane = DataProcessing.GetGrossLoadDistByLane(GrossLoad.Text, CriticalLane_Div[i], dataPredicate, highSpeedData).ToList();
+
+
+                        worksheet.Cells[currRow, 3].Value = string.Join(",", GrossLoad_Dist_ByLane);
+                        worksheet.Cells[currRow, 4].Value = "int";
+
+                        worksheet.Cells[currRow, 5].Value = Gross_Load_Div_XlabelString;
+                        worksheet.Cells[currRow, 6].Value = "数量";
+                        worksheet.Cells[currRow, 7].Value = "否";
+                        currRow++;
+                    }
+
+
+                    package.Save();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Debug.Print(ex.Message);
             }
         }
 
