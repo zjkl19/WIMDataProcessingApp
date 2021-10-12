@@ -427,6 +427,8 @@ namespace WIMDataProcessingApp
                     //var worksheet = package.Workbook.Worksheets[sheetName];    //已有
                     var worksheet = package.Workbook.Worksheets.Add(sheetName);
 
+                    int currRow = 1;
+
                     worksheet.Cells[1, 1].Value = "序号";
                     worksheet.Cells[1, 2].Value = "文件名";
                     worksheet.Cells[1, 3].Value = "数值";
@@ -435,6 +437,8 @@ namespace WIMDataProcessingApp
                     worksheet.Cells[1, 6].Value = "y轴标签";
                     worksheet.Cells[1, 6].Value = "x轴标签标注占比";
 
+
+                    //不同车重区间车辆数
                     worksheet.Cells[2, 2].Value = "不同车重区间车辆数";
                     worksheet.Cells[2, 3].Value = GrossLoad_Dist_WriteString;
                     worksheet.Cells[2, 4].Value = "int";
@@ -468,6 +472,7 @@ namespace WIMDataProcessingApp
                     worksheet.Cells[2, 6].Value = "数量";
                     worksheet.Cells[2, 7].Value = "是";
 
+                    //不同车道车辆数
                     worksheet.Cells[3, 2].Value = "不同车道车辆数";
                     worksheet.Cells[3, 3].Value = Lane_Dist_WriteString;
                     worksheet.Cells[3, 4].Value = "int";
@@ -492,7 +497,8 @@ namespace WIMDataProcessingApp
                     worksheet.Cells[3, 6].Value = "数量";
                     worksheet.Cells[3, 7].Value = "是";
 
-                    worksheet.Cells[4, 2].Value = "不同车道车辆数";
+                    //不同车速区间车辆数
+                    worksheet.Cells[4, 2].Value = "不同车速区间车辆数";
                     worksheet.Cells[4, 3].Value = Speed_Dist_WriteString;
                     worksheet.Cells[4, 4].Value = "int";
 
@@ -519,7 +525,7 @@ namespace WIMDataProcessingApp
                     worksheet.Cells[4, 6].Value = "数量";
                     worksheet.Cells[4, 7].Value = "是";
 
-
+                    //不同小时区间车辆数
                     worksheet.Cells[5, 2].Value = "不同小时区间车辆数";
                     worksheet.Cells[5, 3].Value = Hour_Dist_WriteString;
                     worksheet.Cells[5, 4].Value = "int";
@@ -546,8 +552,9 @@ namespace WIMDataProcessingApp
                     worksheet.Cells[5, 6].Value = "数量";
                     worksheet.Cells[5, 7].Value = "否";
 
-                    int currRow = 5;
+                    currRow = 5;
 
+                    //车道x不同车重区间车辆数
                     for (int i = 0; i < CriticalLane_Div.Length; i++)
                     {
                         worksheet.Cells[currRow, 2].Value = $"车道{CriticalLane_Div[i]}不同车重区间车辆数";
