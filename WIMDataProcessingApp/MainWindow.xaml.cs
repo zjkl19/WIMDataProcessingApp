@@ -396,7 +396,7 @@ namespace WIMDataProcessingApp
                     Console.WriteLine(ex.Message);
                 }
 
-                ExportToExcelForPythonPlot(dataPredicate, highSpeedData, Lane_Dist_WriteString, Speed_Dist_WriteString, GrossLoad_Dist_WriteString, CriticalLane_Div, Hour_Dist_WriteString);
+                ExportToExcelForPythonPlot(dataPredicate, highSpeedData, Lane_Dist_WriteString, Speed_Dist_WriteString, GrossLoad_Dist_WriteString, CriticalLane_Div, Hour_Dist_WriteString, HourSpeed_Dist_WriteString);
 
                 ExportToDocx(startDateTime, finishDateTime, dataPredicate, highSpeedData, Lane_Dist, CriticalLane_Div);
 
@@ -405,7 +405,7 @@ namespace WIMDataProcessingApp
         }
 
         //导出结果到Excel用于后期python作图
-        private void ExportToExcelForPythonPlot(Expression<Func<HighSpeedData, bool>> dataPredicate, IQueryable<HighSpeedData> highSpeedData, string Lane_Dist_WriteString, string Speed_Dist_WriteString, string GrossLoad_Dist_WriteString, int[] CriticalLane_Div, string Hour_Dist_WriteString)
+        private void ExportToExcelForPythonPlot(Expression<Func<HighSpeedData, bool>> dataPredicate, IQueryable<HighSpeedData> highSpeedData, string Lane_Dist_WriteString, string Speed_Dist_WriteString, string GrossLoad_Dist_WriteString, int[] CriticalLane_Div, string Hour_Dist_WriteString,string HourSpeed_Dist_WriteString)
         {
             var WIMToPythonPlotFileName = "动态称重.xlsx";
 
@@ -429,19 +429,19 @@ namespace WIMDataProcessingApp
 
                     int currRow = 1;
 
-                    worksheet.Cells[1, 1].Value = "序号";
-                    worksheet.Cells[1, 2].Value = "文件名";
-                    worksheet.Cells[1, 3].Value = "数值";
-                    worksheet.Cells[1, 4].Value = "数值类型";
-                    worksheet.Cells[1, 5].Value = "x轴标签";
-                    worksheet.Cells[1, 6].Value = "y轴标签";
-                    worksheet.Cells[1, 6].Value = "x轴标签标注占比";
+                    worksheet.Cells[currRow, 1].Value = "序号";
+                    worksheet.Cells[currRow, 2].Value = "文件名";
+                    worksheet.Cells[currRow, 3].Value = "数值";
+                    worksheet.Cells[currRow, 4].Value = "数值类型";
+                    worksheet.Cells[currRow, 5].Value = "x轴标签";
+                    worksheet.Cells[currRow, 6].Value = "y轴标签";
+                    worksheet.Cells[currRow, 6].Value = "x轴标签标注占比";
 
-
+                    currRow++;
                     //不同车重区间车辆数
-                    worksheet.Cells[2, 2].Value = "不同车重区间车辆数";
-                    worksheet.Cells[2, 3].Value = GrossLoad_Dist_WriteString;
-                    worksheet.Cells[2, 4].Value = "int";
+                    worksheet.Cells[currRow, 2].Value = "不同车重区间车辆数";
+                    worksheet.Cells[currRow, 3].Value = GrossLoad_Dist_WriteString;
+                    worksheet.Cells[currRow, 4].Value = "int";
 
 
                     //警告：仅支持整数
@@ -468,14 +468,15 @@ namespace WIMDataProcessingApp
 
                     }
 
-                    worksheet.Cells[2, 5].Value = Gross_Load_Div_XlabelString;
-                    worksheet.Cells[2, 6].Value = "数量";
-                    worksheet.Cells[2, 7].Value = "是";
+                    worksheet.Cells[currRow, 5].Value = Gross_Load_Div_XlabelString;
+                    worksheet.Cells[currRow, 6].Value = "数量";
+                    worksheet.Cells[currRow, 7].Value = "是";
 
+                    currRow++;
                     //不同车道车辆数
-                    worksheet.Cells[3, 2].Value = "不同车道车辆数";
-                    worksheet.Cells[3, 3].Value = Lane_Dist_WriteString;
-                    worksheet.Cells[3, 4].Value = "int";
+                    worksheet.Cells[currRow, 2].Value = "不同车道车辆数";
+                    worksheet.Cells[currRow, 3].Value = Lane_Dist_WriteString;
+                    worksheet.Cells[currRow, 4].Value = "int";
 
                     tempStr = string.Empty;
                     int[] Lane_Div = Array.ConvertAll(Lane.Text.Split(','), s => int.Parse(s));
@@ -493,14 +494,15 @@ namespace WIMDataProcessingApp
                     }
 
                     string Lane_Dist_Xlabeltring = tempStr;
-                    worksheet.Cells[3, 5].Value = Lane_Dist_Xlabeltring;
-                    worksheet.Cells[3, 6].Value = "数量";
-                    worksheet.Cells[3, 7].Value = "是";
+                    worksheet.Cells[currRow, 5].Value = Lane_Dist_Xlabeltring;
+                    worksheet.Cells[currRow, 6].Value = "数量";
+                    worksheet.Cells[currRow, 7].Value = "是";
 
+                    currRow++;
                     //不同车速区间车辆数
-                    worksheet.Cells[4, 2].Value = "不同车速区间车辆数";
-                    worksheet.Cells[4, 3].Value = Speed_Dist_WriteString;
-                    worksheet.Cells[4, 4].Value = "int";
+                    worksheet.Cells[currRow, 2].Value = "不同车速区间车辆数";
+                    worksheet.Cells[currRow, 3].Value = Speed_Dist_WriteString;
+                    worksheet.Cells[currRow, 4].Value = "int";
 
                     tempStr = string.Empty;
                     int[] Speed_Div = Array.ConvertAll(Speed.Text.Split(','), s => int.Parse(s));
@@ -521,14 +523,15 @@ namespace WIMDataProcessingApp
 
                     }
 
-                    worksheet.Cells[4, 5].Value = tempStr;
-                    worksheet.Cells[4, 6].Value = "数量";
-                    worksheet.Cells[4, 7].Value = "是";
+                    worksheet.Cells[currRow, 5].Value = tempStr;
+                    worksheet.Cells[currRow, 6].Value = "数量";
+                    worksheet.Cells[currRow, 7].Value = "是";
 
+                    currRow++;
                     //不同小时区间车辆数
-                    worksheet.Cells[5, 2].Value = "不同小时区间车辆数";
-                    worksheet.Cells[5, 3].Value = Hour_Dist_WriteString;
-                    worksheet.Cells[5, 4].Value = "int";
+                    worksheet.Cells[currRow, 2].Value = "不同小时区间车辆数";
+                    worksheet.Cells[currRow, 3].Value = Hour_Dist_WriteString;
+                    worksheet.Cells[currRow, 4].Value = "int";
 
                     tempStr = string.Empty;
                     int[] Hour_Div = Array.ConvertAll(Hour.Text.Split(','), s => int.Parse(s));
@@ -536,7 +539,7 @@ namespace WIMDataProcessingApp
                     {
                         if (i == 0)
                         {
-                            tempStr = $"0～{Hour_Div[1]}h";
+                            tempStr = $"0～{Hour_Div[1]}";
                         }
                         else if (i != Hour_Div.Length - 1)
                         {
@@ -548,11 +551,40 @@ namespace WIMDataProcessingApp
                         }
                     }
 
-                    worksheet.Cells[5, 5].Value = tempStr;
-                    worksheet.Cells[5, 6].Value = "数量";
-                    worksheet.Cells[5, 7].Value = "否";
+                    worksheet.Cells[currRow, 5].Value = tempStr;
+                    worksheet.Cells[currRow, 6].Value = "数量";
+                    worksheet.Cells[currRow, 7].Value = "否";
 
-                    currRow = 5;
+                    currRow++;
+
+                    //不同小时区间平均车速
+                    worksheet.Cells[currRow, 2].Value = "不同小时区间平均车速";
+                    worksheet.Cells[currRow, 3].Value = HourSpeed_Dist_WriteString;
+                    worksheet.Cells[currRow, 4].Value = "int";
+
+                    tempStr = string.Empty;
+                    Hour_Div = Array.ConvertAll(Hour.Text.Split(','), s => int.Parse(s));
+                    for (int i = 0; i < Hour_Div.Length; i++)
+                    {
+                        if (i == 0)
+                        {
+                            tempStr = $"0～{Hour_Div[1]}";
+                        }
+                        else if (i != Hour_Div.Length - 1)
+                        {
+                            tempStr = $"{tempStr},{Hour_Div[i]}～{Hour_Div[i + 1] }";
+                        }
+                        else
+                        {
+                            tempStr = $"{tempStr},{Hour_Div[i]}～24";
+                        }
+                    }
+
+                    worksheet.Cells[currRow, 5].Value = tempStr;
+                    worksheet.Cells[currRow, 6].Value = "数量";
+                    worksheet.Cells[currRow, 7].Value = "否";
+
+                    currRow++;
 
                     //车道x不同车重区间车辆数
                     for (int i = 0; i < CriticalLane_Div.Length; i++)
