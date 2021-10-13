@@ -135,11 +135,14 @@
     <None Include="HighSpeedDbModel.edmx.diagram">
       <DependentUpon>HighSpeedDbModel.edmx</DependentUpon>
     </None>
+    <None Include="Output\.gitignore" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <None Include="PythonApp\.gitignore" />
+    <None Include="PythonApp\动态称重.xlsx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -158,6 +161,12 @@
       <DependentUpon>HighSpeedDbModel.edmx</DependentUpon>
       <LastGenOutput>HighSpeedDbModel.cs</LastGenOutput>
     </Content>
+    <Content Include="PythonApp\WIMPythonApplicationMainByData.py" />
+    <Content Include="PythonApp\WIMPythonApplicationMainByExcel.py" />
+    <Resource Include="PythonApp\不同车道车辆数.png" />
+    <Resource Include="PythonApp\不同车重区间车辆数.png" />
+    <Resource Include="PythonApp\车道1不同车重区间车辆数.png" />
+    <Resource Include="PythonApp\车道2不同车重区间车辆数.png" />
     <Resource Include="动态称重数据处理程序使用说明.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>

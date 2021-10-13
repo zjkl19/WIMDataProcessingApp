@@ -560,7 +560,7 @@ namespace WIMDataProcessingApp
                     //不同小时区间平均车速
                     worksheet.Cells[currRow, 2].Value = "不同小时区间平均车速";
                     worksheet.Cells[currRow, 3].Value = HourSpeed_Dist_WriteString;
-                    worksheet.Cells[currRow, 4].Value = "int";
+                    worksheet.Cells[currRow, 4].Value = "float";
 
                     tempStr = string.Empty;
                     Hour_Div = Array.ConvertAll(Hour.Text.Split(','), s => int.Parse(s));

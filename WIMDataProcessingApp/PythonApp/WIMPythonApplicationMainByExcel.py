@@ -97,6 +97,7 @@ def plotItem(plt,itemChosen):
 
     saveFileNameListExcelCol=1
     y_dataListExcelCol=2
+    y_dataDataTypeCol=3
     xticksPrefixListExcelCol=4
     ylabelListExcelCol=5
     xticksLabelPercentageExcelCol=6
@@ -136,7 +137,10 @@ def plotItem(plt,itemChosen):
     y_dataList=[]
     
     for i in range(0,rowCount):
-        y_dataList.append(list(map(float,sh.cell_value(i+1,y_dataListExcelCol).split(','))))
+        if(sh.cell_value(i+1,y_dataDataTypeCol)=='float'):
+            y_dataList.append(list(map(float,sh.cell_value(i+1,y_dataListExcelCol).split(','))))
+        elif (sh.cell_value(i+1,y_dataDataTypeCol)=='int'):
+            y_dataList.append(list(map(int,sh.cell_value(i+1,y_dataListExcelCol).split(','))))
     
 
 
