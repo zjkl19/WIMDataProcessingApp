@@ -161,8 +161,12 @@
       <DependentUpon>HighSpeedDbModel.edmx</DependentUpon>
       <LastGenOutput>HighSpeedDbModel.cs</LastGenOutput>
     </Content>
-    <Content Include="PythonApp\WIMPythonApplicationMainByData.py" />
-    <Content Include="PythonApp\WIMPythonApplicationMainByExcel.py" />
+    <Content Include="PythonApp\WIMPythonApplicationMainByData.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="PythonApp\WIMPythonApplicationMainByExcel.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Resource Include="PythonApp\不同车道车辆数.png" />
     <Resource Include="PythonApp\不同车重区间车辆数.png" />
     <Resource Include="PythonApp\车道1不同车重区间车辆数.png" />
