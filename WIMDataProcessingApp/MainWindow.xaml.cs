@@ -599,7 +599,7 @@ namespace WIMDataProcessingApp
 
                         worksheet.Cells[currRow, 5].Value = Gross_Load_Div_XlabelString;
                         worksheet.Cells[currRow, 6].Value = "数量";
-                        worksheet.Cells[currRow, 7].Value = "否";
+                        worksheet.Cells[currRow, 7].Value = "是";
                         currRow++;
                     }
 
