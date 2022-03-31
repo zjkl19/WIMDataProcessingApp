@@ -396,7 +396,7 @@ namespace WIMDataProcessingApp
                     Console.WriteLine(ex.Message);
                 }
 
-                ExportToExcelForPythonPlot(dataPredicate, highSpeedData, Lane_Dist_WriteString, Speed_Dist_WriteString, GrossLoad_Dist_WriteString, CriticalLane_Div, Hour_Dist_WriteString, HourSpeed_Dist_WriteString);
+                ExportToExcelForPythonPlot(dataPredicate, highSpeedData, Lane_Dist_WriteString, Speed_Dist_WriteString, GrossLoad_Dist_WriteString, CriticalLane_Div, Hour_Dist_WriteString, HourSpeed_Dist_WriteString, HourWeight_Dist_WriteString);
 
                 ExportToDocx(startDateTime, finishDateTime, dataPredicate, highSpeedData, Lane_Dist, CriticalLane_Div);
 
@@ -405,7 +405,7 @@ namespace WIMDataProcessingApp
         }
 
         //导出结果到Excel用于后期python作图
-        private void ExportToExcelForPythonPlot(Expression<Func<HighSpeedData, bool>> dataPredicate, IQueryable<HighSpeedData> highSpeedData, string Lane_Dist_WriteString, string Speed_Dist_WriteString, string GrossLoad_Dist_WriteString, int[] CriticalLane_Div, string Hour_Dist_WriteString,string HourSpeed_Dist_WriteString)
+        private void ExportToExcelForPythonPlot(Expression<Func<HighSpeedData, bool>> dataPredicate, IQueryable<HighSpeedData> highSpeedData, string Lane_Dist_WriteString, string Speed_Dist_WriteString, string GrossLoad_Dist_WriteString, int[] CriticalLane_Div, string Hour_Dist_WriteString,string HourSpeed_Dist_WriteString,string HourWeight_Dist_WriteString)
         {
             var WIMToPythonPlotFileName = "动态称重.xlsx";
 
@@ -435,7 +435,7 @@ namespace WIMDataProcessingApp
                     worksheet.Cells[currRow, 4].Value = "数值类型";
                     worksheet.Cells[currRow, 5].Value = "x轴标签";
                     worksheet.Cells[currRow, 6].Value = "y轴标签";
-                    worksheet.Cells[currRow, 6].Value = "x轴标签标注占比";
+                    worksheet.Cells[currRow, 7].Value = "x轴标签标注占比";
 
                     currRow++;
                     //不同车重区间车辆数
@@ -561,6 +561,35 @@ namespace WIMDataProcessingApp
                     worksheet.Cells[currRow, 2].Value = "不同小时区间平均车速";
                     worksheet.Cells[currRow, 3].Value = HourSpeed_Dist_WriteString;
                     worksheet.Cells[currRow, 4].Value = "float";
+
+                    tempStr = string.Empty;
+                    Hour_Div = Array.ConvertAll(Hour.Text.Split(','), s => int.Parse(s));
+                    for (int i = 0; i < Hour_Div.Length; i++)
+                    {
+                        if (i == 0)
+                        {
+                            tempStr = $"0～{Hour_Div[1]}";
+                        }
+                        else if (i != Hour_Div.Length - 1)
+                        {
+                            tempStr = $"{tempStr},{Hour_Div[i]}～{Hour_Div[i + 1] }";
+                        }
+                        else
+                        {
+                            tempStr = $"{tempStr},{Hour_Div[i]}～24";
+                        }
+                    }
+
+                    worksheet.Cells[currRow, 5].Value = tempStr;
+                    worksheet.Cells[currRow, 6].Value = "数量";
+                    worksheet.Cells[currRow, 7].Value = "否";
+
+                    currRow++;
+
+                    //不同区间小时大于指定重量的车数量
+                    worksheet.Cells[currRow, 2].Value = "不同区间小时大于指定重量的车数量";
+                    worksheet.Cells[currRow, 3].Value = HourWeight_Dist_WriteString;
+                    worksheet.Cells[currRow, 4].Value = "int";
 
                     tempStr = string.Empty;
                     Hour_Div = Array.ConvertAll(Hour.Text.Split(','), s => int.Parse(s));
