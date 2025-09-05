@@ -4,10 +4,13 @@ using Aspose.Words.Tables;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -19,6 +22,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using WIMDataProcessingApp.Utils; // 刚才的 Logger 命名空间
 
 namespace WIMDataProcessingApp
 {
@@ -86,10 +90,53 @@ namespace WIMDataProcessingApp
     /// </summary>
     public partial class MainWindow : Window
     {
+        public ObservableCollection<string> LogLines { get; } = new ObservableCollection<string>();
+
+        private string _currentStatus = "就绪";
+        public string CurrentStatus
+        {
+            get => _currentStatus;
+            set { _currentStatus = value; OnPropertyChanged(); }
+        }
+
+
         public MainWindow()
         {
             InitializeComponent();
+            // 初始化日志
+            Logger.Initialize();
+            Logger.OnMessage += s => Dispatcher.Invoke(() =>
+            {
+                LogLines.Add(s);
+                // 只保留最近 5000 行（防 UI 爆内存）
+                if (LogLines.Count > 5000) LogLines.RemoveAt(0);
+                CurrentStatus = s;
+            });
+
+            DataContext = this;
+            Logger.Info("MainWindow loaded. 应用已启动。");
         }
+        // 清空/打开日志目录
+        private void BtnClearLog_OnClick(object sender, RoutedEventArgs e) => LogLines.Clear();
+        private void BtnOpenLogDir_OnClick(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var dir = Logger.LogDirectory;
+                if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
+                System.Diagnostics.Process.Start("explorer.exe", dir);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex, "打开日志目录失败。");
+                MessageBox.Show($"打开日志目录失败：{ex.Message}\n日志：{Logger.LogFilePath}");
+            }
+        }
+
+        // INotifyPropertyChanged
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged([CallerMemberName] string name = null)
+            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
         private void Calc_Click(object sender, RoutedEventArgs e)
         {

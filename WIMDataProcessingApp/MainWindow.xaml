@@ -63,6 +63,17 @@
         <StackPanel Orientation="Horizontal" Margin="{StaticResource defaultMargin}">
             <Label Content="Copyright © 福建省建筑科学研究院 福建省建筑工程质量检测中心有限公司 林迪南 2021" VerticalAlignment="Center"/>
         </StackPanel>
-
+        <!-- MainWindow.xaml 片段：底部日志面板 -->
+        <Expander Header="运行日志（点击展开/折叠）" IsExpanded="True" Margin="0,8,0,0">
+            <DockPanel>
+                <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="0,0,0,4">
+                    <Button Content="清空" Width="80" Margin="0,0,8,0" Click="BtnClearLog_OnClick"/>
+                    <Button Content="打开日志目录" Width="120" Click="BtnOpenLogDir_OnClick"/>
+                    <TextBlock Text="{Binding CurrentStatus}" Margin="16,0,0,0" VerticalAlignment="Center" />
+                </StackPanel>
+                <ListBox ItemsSource="{Binding LogLines}" FontFamily="Consolas" FontSize="12"/>
+            </DockPanel>
+        </Expander>
     </StackPanel>
+    
 </Window>
